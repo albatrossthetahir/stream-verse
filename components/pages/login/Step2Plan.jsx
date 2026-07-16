@@ -32,7 +32,7 @@ const Step2Plan = ({ onNext, initialPlan = 'premium', initialBillingCycle = 'mon
         Step <span className="text-white">2</span> of <span className="text-white">3</span>
       </div>
       <h1 className="text-2xl sm:text-4xl font-black text-left mb-6">
-        Choose the plan that's right for you
+        {"Choose the plan that's right for you"}
       </h1>
 
       {/* Benefits List */}

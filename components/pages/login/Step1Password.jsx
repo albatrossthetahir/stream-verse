@@ -29,7 +29,7 @@ const Step1Password = ({ email, onNext }) => {
         Create a password to start your membership
       </h1>
       <p className='text-sm sm:text-base text-zinc-300 font-normal m-0 mb-6 leading-relaxed'>
-        Just a few more steps and you're done! We hate paperwork, too.
+        {"Just a few more steps and you're done! We hate paperwork, too."}
       </p>
 
       <form onSubmit={handleSubmit} noValidate>
