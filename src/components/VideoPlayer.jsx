@@ -12,7 +12,7 @@ const MOCK_EPISODES = [
 
 export default function VideoPlayer({
   videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-  title = "StreamVerse Originals: The Grid",
+  title = "Luminaea Originals: The Grid",
   description = "In a fully connected white-labeled cosmos, digital segments learn to adapt, survive, and build networks beyond human expectation. Experience premium custom layouts in dark aesthetic environments.",
   onBack = null
 }) {
@@ -275,7 +275,7 @@ export default function VideoPlayer({
 
         {/* Quick status bar */}
         <span className="hidden sm:inline-block bg-[#e50914] text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded">
-          StreamVerse HD
+          Luminaea HD
         </span>
       </div>
 
@@ -505,7 +505,7 @@ export default function VideoPlayer({
         {/* Logo tag branding compliance */}
         <div className="mt-8 pt-4 border-t border-zinc-800 text-center">
           <p className="text-[10px] text-gray-600 tracking-widest uppercase">
-            Powered by StreamVerse Engine
+            Powered by Luminaea Engine
           </p>
         </div>
       </div>

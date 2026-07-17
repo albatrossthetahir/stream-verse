@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 
 export default function HeroSlider({
   title = "The Cyberverse Conspiracy",
-  desc = "A rogue packets specialist discovers a backdoor in the decentralized consensus layer, sparking an electronic cold war. Standard protocols will be shattered. StreamVerse original series.",
+  desc = "A rogue packets specialist discovers a backdoor in the decentralized consensus layer, sparking an electronic cold war. Standard protocols will be shattered. Luminaea original series.",
   videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
   posterUrl = "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1600&auto=format&fit=crop&q=80",
   metadata = {

@@ -89,7 +89,7 @@ export default function BrowsePage() {
   // Hero movie (defaults to the first movie in database)
   const heroMovie = movies[0] || {
     title: "The Cyberverse Conspiracy",
-    description: "A rogue packets specialist discovers a backdoor in the decentralized consensus layer, sparking an electronic cold war. Standard protocols will be shattered. StreamVerse original series.",
+    description: "A rogue packets specialist discovers a backdoor in the decentralized consensus layer, sparking an electronic cold war. Standard protocols will be shattered. Luminaea original series.",
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
   };
 
@@ -107,7 +107,7 @@ export default function BrowsePage() {
             onClick={() => router.push("/")}
             className="text-2xl md:text-3xl font-black tracking-widest text-[#e50914] uppercase cursor-pointer select-none"
           >
-            StreamVerse
+            Luminaea
           </h1>
 
           {/* Nav Categories links */}
@@ -183,7 +183,7 @@ export default function BrowsePage() {
                     }}
                     className="flex w-full items-center gap-2 px-4 py-2.5 text-xs font-medium text-red-500 hover:bg-zinc-800 hover:text-red-400 transition-colors border-t border-zinc-800/80"
                   >
-                    Sign Out of StreamVerse
+                    Sign Out of Luminaea
                   </button>
                 </div>
               )}

@@ -24,7 +24,7 @@ export default function Home() {
         {/* Loading Spinner */}
         <div className="w-12 h-12 border-4 border-t-[#e50914] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin" />
         <p className="text-sm font-semibold tracking-widest text-zinc-400 uppercase">
-          Loading StreamVerse...
+          Loading Luminaea...
         </p>
       </div>
     </div>

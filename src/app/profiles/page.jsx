@@ -82,7 +82,7 @@ export default function ProfilesPage() {
       {/* Top Header branding constraint check */}
       <header className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
         <h1 className="text-2xl font-bold tracking-widest text-[#e50914] uppercase">
-          StreamVerse
+          Luminaea
         </h1>
         <button
           onClick={logout}
@@ -196,7 +196,7 @@ export default function ProfilesPage() {
           <div className="bg-[#181818] border border-zinc-800 rounded-xl p-6 md:p-8 max-w-lg w-full text-left relative shadow-2xl">
             <h3 className="text-2xl font-bold mb-4">Add Profile</h3>
             <p className="text-sm text-gray-400 mb-6">
-              Add a profile for another person watching StreamVerse.
+              Add a profile for another person watching Luminaea.
             </p>
 
             <form onSubmit={handleCreateProfileSubmit}>

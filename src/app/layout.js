@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "StreamVerse - Premium Video Streaming",
+  title: "Luminaea - Premium Video Streaming",
   description: "A high-fidelity white-labeled video streaming experience platform clone.",
 };
 
