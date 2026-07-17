@@ -65,7 +65,7 @@ export async function POST(req) {
       return NextResponse.json({ error: "Missing required complete parameters" }, { status: 400 });
     }
 
-    const tempDir = path.join(process.cwd(), "public", "temp_uploads", uploadId);
+    const tempDir = path.join(process.cwd(), ".temp_uploads", uploadId);
     const finalDir = path.join(process.cwd(), "public", "videos");
 
     if (!fs.existsSync(finalDir)) {

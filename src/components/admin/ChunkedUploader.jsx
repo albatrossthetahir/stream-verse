@@ -198,7 +198,10 @@ export default function OwnerDashboard() {
         })
       });
 
-      if (!initRes.ok) throw new Error("Failed to initialize upload session.");
+      if (!initRes.ok) {
+        const errorData = await initRes.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to initialize upload session.");
+      }
       const { uploadId, fileKey } = await initRes.json();
 
       // 2. Slice file and upload parts sequentially

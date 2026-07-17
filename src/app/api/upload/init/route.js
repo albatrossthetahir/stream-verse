@@ -18,7 +18,7 @@ export async function POST(req) {
     const fileKey = sanitizedName;
 
     // Create temp directory for chunks
-    const tempDir = path.join(process.cwd(), "public", "temp_uploads", uploadId);
+    const tempDir = path.join(process.cwd(), ".temp_uploads", uploadId);
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
     }
@@ -27,7 +27,7 @@ export async function POST(req) {
       success: true,
       uploadId,
       fileKey,
-      tempDir: `/temp_uploads/${uploadId}`
+      tempDir: `/.temp_uploads/${uploadId}`
     });
   } catch (err) {
     console.error("Upload init route error:", err);

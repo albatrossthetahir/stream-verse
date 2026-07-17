@@ -19,7 +19,7 @@ export async function POST(req) {
     const buffer = Buffer.from(arrayBuffer);
 
     // Save part slice
-    const partPath = path.join(process.cwd(), "public", "temp_uploads", uploadId, `part-${partNumber}`);
+    const partPath = path.join(process.cwd(), ".temp_uploads", uploadId, `part-${partNumber}`);
     fs.writeFileSync(partPath, buffer);
 
     // Return a mock ETag for the part
