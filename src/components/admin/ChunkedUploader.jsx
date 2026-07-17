@@ -218,9 +218,9 @@ export default function OwnerDashboard() {
   };
 
   return (
-    <div className="bg-[#121212] border border-zinc-800 text-white rounded-xl shadow-2xl overflow-hidden max-w-5xl w-full mx-auto font-sans relative flex flex-col min-h-[80vh] md:min-h-[600px] select-none">
+    <div className="bg-black border border-zinc-900 text-white rounded-xl shadow-2xl overflow-hidden max-w-5xl w-full mx-auto font-sans relative flex flex-col min-h-[80vh] md:min-h-[600px] select-none">
       {/* Dashboard Top Header */}
-      <div className="bg-[#181818] border-b border-zinc-800 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-zinc-950/40 border-b border-zinc-900 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-red-600 animate-pulse"></span>
@@ -230,7 +230,7 @@ export default function OwnerDashboard() {
         </div>
 
         {/* Tab switch buttons */}
-        <div className="flex bg-zinc-950/60 p-1 border border-zinc-800 rounded-lg shrink-0">
+        <div className="flex bg-black p-1 border border-zinc-900 rounded-lg shrink-0">
           <button
             onClick={() => setActiveTab("analytics")}
             className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded transition-all duration-200 ${
@@ -267,7 +267,7 @@ export default function OwnerDashboard() {
             {/* Grid of 4 glowing KPI cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Card 1: Live Users */}
-              <div className="bg-[#181818] border border-zinc-800/80 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-700 transition-colors duration-200">
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
                 <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Live Connections</span>
                 <span className="text-3xl font-black text-white mt-1.5 font-mono">{liveUsers}</span>
                 <div className="absolute top-4 right-4 bg-red-950/40 text-red-500 rounded px-1.5 py-0.5 text-[9px] uppercase font-black tracking-widest flex items-center gap-1 border border-red-900/20">
@@ -277,30 +277,30 @@ export default function OwnerDashboard() {
               </div>
 
               {/* Card 2: Active Streams */}
-              <div className="bg-[#181818] border border-zinc-800/80 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-700 transition-colors duration-200">
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
                 <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Active Streams</span>
                 <span className="text-3xl font-black text-white mt-1.5 font-mono">{activeStreams}</span>
-                <span className="text-[10px] text-emerald-500 mt-1 font-semibold flex items-center gap-0.5">
+                <span className="text-[10px] text-red-500 mt-1 font-semibold flex items-center gap-0.5">
                   <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
                   +4.2% streams
                 </span>
               </div>
 
               {/* Card 3: Network Throughput */}
-              <div className="bg-[#181818] border border-zinc-800/80 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-700 transition-colors duration-200">
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
                 <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Uplink Speed</span>
                 <span className="text-3xl font-black text-white mt-1.5 font-mono">{bandwidthGbps} <span className="text-sm font-semibold text-zinc-500">Gbps</span></span>
                 <span className="text-[10px] text-zinc-500 mt-1 font-medium font-mono">Peak Capacity: 10 Gbps</span>
               </div>
 
               {/* Card 4: Platform Health */}
-              <div className="bg-[#181818] border border-zinc-800/80 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-700 transition-colors duration-200">
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
                 <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Nodes CPU</span>
                 <span className="text-3xl font-black text-white mt-1.5 font-mono">{cpuLoad}%</span>
-                <div className="w-full bg-zinc-800 rounded-full h-1 mt-2.5 overflow-hidden">
+                <div className="w-full bg-zinc-900 rounded-full h-1 mt-2.5 overflow-hidden">
                   <div 
                     className={`h-1 rounded-full transition-all duration-300 ${
-                      cpuLoad > 18 ? 'bg-orange-500' : 'bg-emerald-500'
+                      cpuLoad > 18 ? 'bg-[#e50914]' : 'bg-white'
                     }`} 
                     style={{ width: `${cpuLoad * 4}%` }} 
                   />
@@ -311,13 +311,13 @@ export default function OwnerDashboard() {
             {/* Graphs Grid: SVG charts */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Line graph card */}
-              <div className="bg-[#181818] border border-zinc-800/80 rounded-xl p-5 lg:col-span-2 flex flex-col text-left">
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 lg:col-span-2 flex flex-col text-left">
                 <div className="flex justify-between items-center mb-6">
                   <div>
                     <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300">Daily Viewers Metrics</h3>
                     <p className="text-[10px] text-zinc-500 mt-0.5">Consolidated traffic trend in streaming minutes.</p>
                   </div>
-                  <span className="text-[10px] font-semibold text-zinc-400 bg-zinc-900 border border-zinc-800 px-2 py-1 rounded">7D History</span>
+                  <span className="text-[10px] font-semibold text-zinc-400 bg-black border border-zinc-900 px-2 py-1 rounded">7D History</span>
                 </div>
                 {/* SVG Line Graph */}
                 <div className="w-full h-[180px] relative">
@@ -346,9 +346,9 @@ export default function OwnerDashboard() {
                       strokeLinecap="round"
                     />
                     {/* Dots at key points */}
-                    <circle cx="160" cy="120" r="4" fill="#e50914" stroke="#181818" strokeWidth="1.5" />
-                    <circle cx="320" cy="60" r="4" fill="#e50914" stroke="#181818" strokeWidth="1.5" />
-                    <circle cx="500" cy="20" r="4" fill="#e50914" stroke="#181818" strokeWidth="1.5" />
+                    <circle cx="160" cy="120" r="4" fill="#e50914" stroke="#000000" strokeWidth="1.5" />
+                    <circle cx="320" cy="60" r="4" fill="#e50914" stroke="#000000" strokeWidth="1.5" />
+                    <circle cx="500" cy="20" r="4" fill="#e50914" stroke="#000000" strokeWidth="1.5" />
                   </svg>
                   {/* Axis labels */}
                   <div className="flex justify-between items-center text-[9px] font-semibold text-zinc-500 mt-2 font-mono px-1">
@@ -364,7 +364,7 @@ export default function OwnerDashboard() {
               </div>
 
               {/* Health and Devices Distribution Column */}
-              <div className="bg-[#181818] border border-zinc-800/80 rounded-xl p-5 flex flex-col text-left justify-between gap-6">
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col text-left justify-between gap-6">
                 <div>
                   <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300 mb-4">Device Distribution</h3>
                   <div className="space-y-3.5">
@@ -375,7 +375,7 @@ export default function OwnerDashboard() {
                         <span className="text-zinc-200">54%</span>
                       </div>
                       <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden">
-                        <div className="bg-red-600 h-1.5 rounded-full" style={{ width: "54%" }}></div>
+                        <div className="bg-[#e50914] h-1.5 rounded-full" style={{ width: "54%" }}></div>
                       </div>
                     </div>
                     {/* Mobile App */}
@@ -385,7 +385,7 @@ export default function OwnerDashboard() {
                         <span className="text-zinc-200">31%</span>
                       </div>
                       <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden">
-                        <div className="bg-rose-500 h-1.5 rounded-full" style={{ width: "31%" }}></div>
+                        <div className="bg-white h-1.5 rounded-full" style={{ width: "31%" }}></div>
                       </div>
                     </div>
                     {/* Mobile */}
@@ -395,20 +395,20 @@ export default function OwnerDashboard() {
                         <span className="text-zinc-200">15%</span>
                       </div>
                       <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden">
-                        <div className="bg-zinc-650 h-1.5 rounded-full" style={{ width: "15%" }}></div>
+                        <div className="bg-zinc-700 h-1.5 rounded-full" style={{ width: "15%" }}></div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="border-t border-zinc-800/80 pt-4 flex justify-between items-center">
+                <div className="border-t border-zinc-900 pt-4 flex justify-between items-center">
                   <div>
                     <span className="text-[10px] text-zinc-500 block uppercase tracking-wider">Uptime SLA</span>
-                    <span className="text-base font-extrabold text-emerald-400 font-mono mt-0.5 block">99.98%</span>
+                    <span className="text-base font-extrabold text-[#e50914] font-mono mt-0.5 block">99.98%</span>
                   </div>
                   <div>
                     <span className="text-[10px] text-zinc-500 block uppercase tracking-wider">Platform Health</span>
-                    <span className="text-xs font-bold text-zinc-200 bg-zinc-900 border border-zinc-800 py-0.5 px-2 rounded mt-0.5 block">Optimal</span>
+                    <span className="text-xs font-bold text-zinc-200 bg-black border border-zinc-900 py-0.5 px-2 rounded mt-0.5 block">Optimal</span>
                   </div>
                 </div>
               </div>
@@ -417,7 +417,7 @@ export default function OwnerDashboard() {
             {/* Bottom Section: Hourly traffic bars + Live Log */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Traffic bars */}
-              <div className="bg-[#181818] border border-zinc-800/80 rounded-xl p-5 flex flex-col text-left">
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col text-left">
                 <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300 mb-1">Hourly Load Peaks</h3>
                 <p className="text-[10px] text-zinc-500 mb-6">Bandwidth levels across peak local hours.</p>
                 <div className="flex items-end justify-between gap-2 h-[120px] pt-4 px-2">
@@ -425,7 +425,7 @@ export default function OwnerDashboard() {
                     <div key={i} className="flex-grow flex flex-col items-center gap-2">
                       <div className="w-full bg-zinc-900 h-[80px] rounded relative overflow-hidden">
                         <div 
-                          className="bg-gradient-to-t from-red-700 to-rose-500 w-full rounded absolute bottom-0 transition-all duration-500" 
+                          className="bg-gradient-to-t from-[#e50914] to-white w-full rounded absolute bottom-0 transition-all duration-500" 
                           style={{ height: `${h}%` }}
                         />
                       </div>
@@ -436,21 +436,21 @@ export default function OwnerDashboard() {
               </div>
 
               {/* Event Logging System */}
-              <div className="bg-[#181818] border border-zinc-800/80 rounded-xl p-5 lg:col-span-2 flex flex-col text-left">
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 lg:col-span-2 flex flex-col text-left">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300">Live Gateway activity logs</h3>
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#e50914] animate-pulse"></span>
                 </div>
 
                 {/* Log display */}
-                <div className="flex-grow bg-zinc-950/70 border border-zinc-900 rounded p-3 font-mono text-[10px] leading-relaxed text-zinc-400 overflow-y-auto space-y-2 max-h-[140px] scrollbar-hide">
+                <div className="flex-grow bg-black border border-zinc-900 rounded p-3 font-mono text-[10px] leading-relaxed text-zinc-400 overflow-y-auto space-y-2 max-h-[140px] scrollbar-hide">
                   {eventLogs.map((log) => {
                     const tagColor = {
-                      system: "text-blue-400 bg-blue-950/40 border-blue-900/30",
-                      auth: "text-purple-400 bg-purple-950/40 border-purple-900/30",
-                      stream: "text-emerald-400 bg-emerald-950/40 border-emerald-900/30",
-                      upload: "text-amber-400 bg-amber-950/40 border-amber-900/30"
-                    }[log.type] || "text-zinc-400 bg-zinc-900 border-zinc-850";
+                      system: "text-white bg-black border-zinc-800",
+                      auth: "text-red-500 bg-red-950/20 border-red-900/30",
+                      stream: "text-[#e50914] bg-black border-red-950",
+                      upload: "text-white bg-red-950/40 border-red-900/40"
+                    }[log.type] || "text-white bg-black border-zinc-900";
 
                     return (
                       <div key={log.id} className="flex items-start gap-2 border-b border-zinc-900 pb-1.5 last:border-b-0 last:pb-0">
@@ -468,12 +468,12 @@ export default function OwnerDashboard() {
           </div>
         ) : (
           /* Tab 2: Uploading screen */
-          <div className="max-w-2xl w-full mx-auto bg-[#181818] border border-zinc-800 rounded-xl p-6 sm:p-8 shadow-xl text-left">
+          <div className="max-w-2xl w-full mx-auto bg-black border border-zinc-900 rounded-xl p-6 sm:p-8 shadow-xl text-left">
             <h3 className="text-xl font-bold mb-2 tracking-wide text-white">
               Media Catalog Deploy Tool
             </h3>
-            <p className="text-xs text-zinc-400 mb-6 border-b border-zinc-800/80 pb-4">
-              Add new titles to StreamVerse. Support high-speed chunked uploads for large video assets.
+            <p className="text-xs text-zinc-400 mb-6 border-b border-zinc-900 pb-4">
+              Add new titles to Luminaea. Support high-speed chunked uploads for large video assets.
             </p>
 
             <form onSubmit={startUpload} className="space-y-6">
@@ -487,7 +487,7 @@ export default function OwnerDashboard() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Cyberverse Conspiracy"
-                  className="w-full bg-zinc-900/60 border border-zinc-800 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-base transition-colors"
+                  className="w-full bg-black border border-zinc-900 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-base transition-colors"
                   required
                   disabled={isUploading}
                 />
@@ -503,7 +503,7 @@ export default function OwnerDashboard() {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Write a brief overview of the plot, characters, and settings."
                   rows={3}
-                  className="w-full bg-zinc-900/60 border border-zinc-800 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-base transition-colors resize-none"
+                  className="w-full bg-black border border-zinc-900 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-base transition-colors resize-none"
                   required
                   disabled={isUploading}
                 />
@@ -521,7 +521,7 @@ export default function OwnerDashboard() {
                     onChange={(e) => setReleaseYear(parseInt(e.target.value))}
                     min={1900}
                     max={2099}
-                    className="w-full bg-zinc-900/60 border border-zinc-800 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-base transition-colors"
+                    className="w-full bg-black border border-zinc-900 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-base transition-colors"
                     required
                     disabled={isUploading}
                   />
@@ -536,7 +536,7 @@ export default function OwnerDashboard() {
                     value={genre}
                     onChange={(e) => setGenre(e.target.value)}
                     placeholder="e.g. Sci-Fi, Drama"
-                    className="w-full bg-zinc-900/60 border border-zinc-800 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-base transition-colors"
+                    className="w-full bg-black border border-zinc-900 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-base transition-colors"
                     required
                     disabled={isUploading}
                   />
@@ -551,7 +551,7 @@ export default function OwnerDashboard() {
                     value={duration}
                     onChange={(e) => setDuration(e.target.value)}
                     placeholder="e.g. 105"
-                    className="w-full bg-zinc-900/60 border border-zinc-800 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-base transition-colors"
+                    className="w-full bg-black border border-zinc-900 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-base transition-colors"
                     required
                     disabled={isUploading}
                   />
@@ -565,7 +565,7 @@ export default function OwnerDashboard() {
                   <label className="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">
                     Thumbnail / Poster (JPG/PNG)
                   </label>
-                  <div className="relative border border-dashed border-zinc-800 rounded bg-zinc-900/40 py-6 px-4 text-center cursor-pointer hover:border-zinc-700 transition-colors">
+                  <div className="relative border border-dashed border-zinc-900 rounded bg-black py-6 px-4 text-center cursor-pointer hover:border-zinc-800 transition-colors">
                     <input
                       type="file"
                       accept="image/*"
@@ -587,7 +587,7 @@ export default function OwnerDashboard() {
                   <label className="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">
                     Video File (MP4/MKV)
                   </label>
-                  <div className="relative border border-dashed border-[#e50914]/30 rounded bg-zinc-900/40 py-6 px-4 text-center cursor-pointer hover:border-[#e50914] transition-colors">
+                  <div className="relative border border-dashed border-[#e50914]/30 rounded bg-black py-6 px-4 text-center cursor-pointer hover:border-[#e50914] transition-colors">
                     <input
                       type="file"
                       accept="video/*"
@@ -608,13 +608,13 @@ export default function OwnerDashboard() {
 
               {/* PROGRESS METRICS BOX (Rendered during active uploads) */}
               {(isUploading || uploadStatus) && uploadStatus !== "" && (
-                <div className="bg-zinc-950/50 border border-zinc-800 rounded p-4 space-y-3 font-sans">
+                <div className="bg-black border border-zinc-900 rounded p-4 space-y-3 font-sans">
                   <div className="flex justify-between items-center text-xs font-semibold">
                     <span className="text-zinc-400 capitalize">
                       Status: <strong className="text-white">{uploadStatus}</strong>
                     </span>
                     {uploadStatus === "uploading" && (
-                      <span className="text-green-500 font-mono">{speedMB} MB/s</span>
+                      <span className="text-white font-mono">{speedMB} MB/s</span>
                     )}
                   </div>
 
@@ -629,7 +629,7 @@ export default function OwnerDashboard() {
                     <span>{uploadProgress}% completed</span>
                     {uploadStatus === "initing" && <span>Initiating secure session...</span>}
                     {uploadStatus === "completing" && <span>Merging binary chunks on cloud storage...</span>}
-                    {uploadStatus === "success" && <span className="text-green-500 font-semibold">Upload completed successfully!</span>}
+                    {uploadStatus === "success" && <span className="text-[#e50914] font-semibold">Upload completed successfully!</span>}
                     {uploadStatus === "error" && <span className="text-red-500 font-semibold truncate max-w-xs">{errorMessage}</span>}
                   </div>
                 </div>
@@ -639,7 +639,7 @@ export default function OwnerDashboard() {
               <button
                 type="submit"
                 disabled={isUploading}
-                className="w-full bg-[#e50914] hover:bg-red-700 disabled:bg-zinc-800 disabled:text-zinc-500 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded tracking-wider text-sm transition-colors uppercase"
+                className="w-full bg-[#e50914] hover:bg-red-700 disabled:bg-black disabled:border disabled:border-zinc-900 disabled:text-zinc-700 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded tracking-wider text-sm transition-colors uppercase"
               >
                 {isUploading ? "Uploading Chunks..." : "Upload & Deploy Media"}
               </button>

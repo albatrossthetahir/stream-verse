@@ -71,7 +71,7 @@ export default function BrowsePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#141414] flex items-center justify-center text-white font-sans">
+      <div className="min-h-screen bg-black flex items-center justify-center text-white font-sans">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-t-[#e50914] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin" />
           <p className="text-sm font-semibold tracking-widest text-zinc-400 uppercase">Loading Dashboard...</p>
@@ -94,11 +94,11 @@ export default function BrowsePage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#141414] text-white font-sans overflow-x-hidden">
+    <div className="relative min-h-screen bg-black text-white font-sans overflow-x-hidden">
       {/* 1. NAVIGATION BAR */}
       <nav
         className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-500 py-4 px-6 md:px-12 flex items-center justify-between ${
-          scrolled ? "bg-[#141414] shadow-md border-b border-zinc-900" : "bg-gradient-to-b from-black/80 to-transparent"
+          scrolled ? "bg-black shadow-md border-b border-zinc-900" : "bg-gradient-to-b from-black/80 to-transparent"
         }`}
       >
         <div className="flex items-center gap-8">
@@ -203,7 +203,7 @@ export default function BrowsePage() {
       />
 
       {/* 3. ROW CATEGORY CAROUSELS */}
-      <div className="relative pb-24 space-y-8 md:space-y-12 z-20 bg-gradient-to-b from-transparent via-[#141414] to-[#141414] mt-[-5vw] sm:mt-[-10vw]">
+      <div className="relative pb-24 space-y-8 md:space-y-12 z-20 bg-gradient-to-b from-transparent via-black to-black mt-[-5vw] sm:mt-[-10vw]">
         {/* Row 1: Trending */}
         {trendingMovies.length > 0 && (
           <MovieCarousel

@@ -6,14 +6,12 @@ const AuthContext = createContext(null);
 
 // Curated grid of premium avatars (sleek gradients with modern geometric patterns/icons)
 export const PRESETS_AVATARS = [
-  { id: "avatar-1", name: "Nebula Red", class: "bg-gradient-to-tr from-red-600 to-rose-400" },
-  { id: "avatar-2", name: "Cosmic Blue", class: "bg-gradient-to-tr from-blue-600 to-cyan-400" },
-  { id: "avatar-3", name: "Emerald Aurum", class: "bg-gradient-to-tr from-emerald-600 to-teal-400" },
-  { id: "avatar-4", name: "Solar Orange", class: "bg-gradient-to-tr from-amber-600 to-orange-400" },
-  { id: "avatar-5", name: "Amethyst Violet", class: "bg-gradient-to-tr from-purple-600 to-indigo-400" },
-  { id: "avatar-6", name: "Neon Lime", class: "bg-gradient-to-tr from-lime-600 to-green-400" },
-  { id: "avatar-7", name: "Steel Silver", class: "bg-gradient-to-tr from-slate-600 to-zinc-400" },
-  { id: "avatar-8", name: "Fuchsia Pink", class: "bg-gradient-to-tr from-fuchsia-600 to-pink-400" }
+  { id: "avatar-1", name: "Crimson Eclipse", class: "bg-gradient-to-tr from-red-700 to-black border border-red-600" },
+  { id: "avatar-2", name: "Obsidian Core", class: "bg-gradient-to-tr from-zinc-900 to-black border border-white" },
+  { id: "avatar-3", name: "Lumina Red", class: "bg-[#e50914] text-white border border-white" },
+  { id: "avatar-4", name: "Starlight White", class: "bg-white text-black font-black" },
+  { id: "avatar-5", name: "Velvet Crimson", class: "bg-gradient-to-tr from-red-600 to-red-950 border border-zinc-700" },
+  { id: "avatar-6", name: "Shadow Grid", class: "bg-gradient-to-tr from-black to-zinc-900 border border-red-700" }
 ];
 
 export const AuthProvider = ({ children }) => {

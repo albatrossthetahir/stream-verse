@@ -63,8 +63,8 @@ export default function HeroSlider({
           />
         )}
         {/* Sleek radial and linear dark gradients for cinema contrast */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/40 to-transparent z-10" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#141414]/90 via-[#141414]/30 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/30 to-transparent z-10" />
       </div>
 
       {/* Hero Metadata Panel & Action Layer */}

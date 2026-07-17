@@ -74,7 +74,7 @@ export default function ProfilesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#141414] text-white flex flex-col justify-center items-center font-sans px-4 select-none relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white flex flex-col justify-center items-center font-sans px-4 select-none relative overflow-hidden">
       {/* Visual Ambient glow backgrounds */}
       <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-red-950/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-red-950/15 blur-[120px] pointer-events-none" />
@@ -193,7 +193,7 @@ export default function ProfilesPage() {
       {/* CREATE NEW PROFILE MODAL */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-all duration-300">
-          <div className="bg-[#181818] border border-zinc-800 rounded-xl p-6 md:p-8 max-w-lg w-full text-left relative shadow-2xl">
+          <div className="bg-black border border-zinc-800 rounded-xl p-6 md:p-8 max-w-lg w-full text-left relative shadow-2xl">
             <h3 className="text-2xl font-bold mb-4">Add Profile</h3>
             <p className="text-sm text-gray-400 mb-6">
               Add a profile for another person watching Luminaea.
@@ -215,7 +215,7 @@ export default function ProfilesPage() {
                     onChange={(e) => setNewProfileName(e.target.value)}
                     placeholder="Enter name"
                     maxLength={15}
-                    className="w-full bg-[#333] text-white py-3 px-4 rounded-lg outline-none border border-transparent focus:border-[#e50914] transition-colors text-base"
+                    className="w-full bg-black text-white py-3 px-4 rounded-lg outline-none border border-zinc-800 focus:border-[#e50914] transition-colors text-base"
                     required
                     autoFocus
                   />
@@ -270,7 +270,7 @@ export default function ProfilesPage() {
       {/* EDIT/DELETE PROFILE MODAL */}
       {showEditModal && editingProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-all duration-300">
-          <div className="bg-[#181818] border border-zinc-800 rounded-xl p-6 md:p-8 max-w-lg w-full text-left relative shadow-2xl">
+          <div className="bg-black border border-zinc-800 rounded-xl p-6 md:p-8 max-w-lg w-full text-left relative shadow-2xl">
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-2xl font-bold">Edit Profile</h3>
               <button
@@ -311,7 +311,7 @@ export default function ProfilesPage() {
                     onChange={(e) => setEditProfileName(e.target.value)}
                     placeholder="Enter name"
                     maxLength={15}
-                    className="w-full bg-[#333] text-white py-3 px-4 rounded-lg outline-none border border-transparent focus:border-[#e50914] transition-colors text-base"
+                    className="w-full bg-black text-white py-3 px-4 rounded-lg outline-none border border-zinc-800 focus:border-[#e50914] transition-colors text-base"
                     required
                     autoFocus
                   />

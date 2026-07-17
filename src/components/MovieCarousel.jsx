@@ -72,7 +72,7 @@ export default function MovieCarousel({
             <div
               key={movie.id}
               onClick={() => onSelectMovie && onSelectMovie(movie)}
-              className="relative flex-none w-[160px] sm:w-[220px] md:w-[280px] aspect-video bg-zinc-900 rounded-md overflow-hidden cursor-pointer shadow-lg transform transition-all duration-300 hover:scale-105 hover:z-20 hover:shadow-2xl border border-zinc-800 hover:border-zinc-500 group/card"
+              className="relative flex-none w-[160px] sm:w-[220px] md:w-[280px] aspect-video bg-black rounded-md overflow-hidden cursor-pointer shadow-lg transform transition-all duration-300 hover:scale-105 hover:z-20 hover:shadow-2xl border border-zinc-900 hover:border-[#e50914] group/card"
             >
               {/* Cover Poster Image */}
               <img
@@ -83,7 +83,7 @@ export default function MovieCarousel({
               />
 
               {/* Hover Metadata Information Popover Panel (Scales In) */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 p-3 flex flex-col justify-end">
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/90 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 p-3 flex flex-col justify-end">
                 {/* Micro Action Buttons */}
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
@@ -93,7 +93,7 @@ export default function MovieCarousel({
                         <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
                       </svg>
                     </span>
-                    <span className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-600 flex items-center justify-center hover:border-white transition-colors text-white">
+                    <span className="w-8 h-8 rounded-full bg-black border border-zinc-800 flex items-center justify-center hover:border-[#e50914] transition-colors text-white">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                       </svg>
@@ -101,7 +101,7 @@ export default function MovieCarousel({
                   </div>
                   
                   {/* Match percentage */}
-                  <span className="text-xs font-bold text-green-400">
+                  <span className="text-xs font-bold text-[#e50914]">
                     {movie.match}
                   </span>
                 </div>
@@ -113,11 +113,11 @@ export default function MovieCarousel({
 
                 {/* Mini details tags */}
                 <div className="flex items-center gap-1.5 text-[9px] sm:text-xs text-gray-300 font-medium mb-1">
-                  <span className="border border-gray-500 px-1 rounded-sm text-[8px] sm:text-[10px]">
+                  <span className="border border-zinc-800 px-1 rounded-sm text-[8px] sm:text-[10px]">
                     {movie.rating}
                   </span>
                   <span>{movie.duration}</span>
-                  <span className="bg-zinc-800 px-1.5 py-0.2 rounded text-[8px]">HD</span>
+                  <span className="bg-black border border-zinc-800 px-1.5 py-0.2 rounded text-[8px]">HD</span>
                 </div>
 
                 {/* Genre chips */}

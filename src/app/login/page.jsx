@@ -92,7 +92,7 @@ export default function Login() {
       className={`min-h-screen w-full relative transition-all duration-300 flex flex-col justify-center items-center py-24 px-4 ${
         isLandingOrSignIn 
           ? "bg-cover bg-no-repeat bg-center login-bg after:w-full after:h-full after:absolute after:top-0 after:left-0 after:bg-black/60 after:z-10" 
-          : "bg-[#141414]"
+          : "bg-black"
       }`}
     >
       <Header 
