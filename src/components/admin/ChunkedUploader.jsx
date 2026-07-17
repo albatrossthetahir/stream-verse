@@ -259,88 +259,37 @@ export default function OwnerDashboard() {
         return;
       }
 
-      // 1. Initialize Multipart Upload Session
-      const initRes = await fetch("/api/upload/init", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          filename: videoFile.name,
-          contentType: videoFile.type,
-          title
-        })
-      });
-
-      if (!initRes.ok) {
-        const errorData = await initRes.json().catch(() => ({}));
-        throw new Error(errorData.error || "Failed to initialize upload session.");
-      }
-      const { uploadId, fileKey } = await initRes.json();
-
-      // 2. Slice file and upload parts sequentially
-      const totalSize = videoFile.size;
-      const totalPartsCount = Math.ceil(totalSize / CHUNK_SIZE);
-      const uploadedParts = [];
-
+      // Single-request file upload (works on serverless — entire file in one invocation)
       setUploadStatus("uploading");
+      setUploadProgress(10);
 
-      for (let partNumber = 1; partNumber <= totalPartsCount; partNumber++) {
-        const start = (partNumber - 1) * CHUNK_SIZE;
-        const end = Math.min(start + CHUNK_SIZE, totalSize);
-        const chunkBlob = videoFile.slice(start, end);
+      const formData = new FormData();
+      formData.append("video", videoFile);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("releaseYear", releaseYear.toString());
+      formData.append("genre", genre);
+      formData.append("duration", duration);
 
-        const partStart = Date.now();
-
-        const formData = new FormData();
-        formData.append("chunk", chunkBlob);
-        formData.append("uploadId", uploadId);
-        formData.append("partNumber", partNumber.toString());
-        formData.append("fileKey", fileKey);
-
-        const partRes = await fetch("/api/upload/part", {
-          method: "POST",
-          body: formData
-        });
-
-        if (!partRes.ok) {
-          const errText = await partRes.text().catch(() => "");
-          throw new Error(`Failed uploading chunk #${partNumber} (HTTP ${partRes.status}): ${errText}`);
-        }
-
-        const { ETag } = await partRes.json();
-        uploadedParts.push({ partNumber, ETag });
-
-        const partEnd = Date.now();
-        const durationSec = (partEnd - partStart) / 1000;
-        const sizeMB = chunkBlob.size / (1024 * 1024);
-        if (durationSec > 0) {
-          setSpeedMB(parseFloat((sizeMB / durationSec).toFixed(2)));
-        }
-
-        const percent = Math.round((partNumber / totalPartsCount) * 100);
-        setUploadProgress(percent);
+      if (posterSourceType === "url" && posterUrlInput) {
+        formData.append("directPosterUrl", posterUrlInput);
       }
 
-      // 3. Finalize upload session
-      setUploadStatus("completing");
-      const completeRes = await fetch("/api/upload/complete", {
+      setUploadProgress(30);
+
+      const uploadRes = await fetch("/api/upload/single", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          uploadId,
-          fileKey,
-          parts: uploadedParts,
-          metadata: {
-            title,
-            description,
-            releaseYear,
-            genre,
-            duration
-          }
-        })
+        body: formData
       });
 
-      if (!completeRes.ok) throw new Error("Failed to finalize upload parts merger.");
-      const finalData = await completeRes.json();
+      setUploadProgress(80);
+
+      if (!uploadRes.ok) {
+        const errData = await uploadRes.json().catch(() => ({}));
+        throw new Error(errData.error || `Upload failed (HTTP ${uploadRes.status})`);
+      }
+
+      const finalData = await uploadRes.json();
 
       // Append custom movie metadata to browser local storage
       try {
@@ -349,7 +298,7 @@ export default function OwnerDashboard() {
           id: "m-" + Date.now(),
           title: title || "Untitled Media",
           description: description || "",
-          videoUrl: finalData.videoUrl || `/api/videos/${fileKey}`,
+          videoUrl: finalData.videoUrl,
           poster: "/placeholder-movie.jpg",
           duration: duration ? `${duration}m` : "120m",
           releaseYear: parseInt(releaseYear) || 2026,
@@ -882,7 +831,7 @@ export default function OwnerDashboard() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
                       </svg>
                       <span className="text-[11px] text-[#e50914]/70 block truncate">
-                        {videoFile ? `${videoFile.name} (${(videoFile.size / (1024*1024)).toFixed(1)} MB)` : "Choose video file (< 50MB)"}
+                        {videoFile ? `${videoFile.name} (${(videoFile.size / (1024*1024)).toFixed(1)} MB)` : "Choose video file (max ~4MB on Vercel)"}
                       </span>
                     </div>
                   ) : (

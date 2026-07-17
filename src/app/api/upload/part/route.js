@@ -23,8 +23,12 @@ export async function POST(req) {
     const arrayBuffer = await chunkFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Save part slice
-    const partPath = path.join(os.tmpdir(), "luminaea_uploads", uploadId, `part-${partNumber}`);
+    // Save part slice — ensure directory exists (each serverless function runs in its own container)
+    const partDir = path.join(os.tmpdir(), "luminaea_uploads", uploadId);
+    if (!fs.existsSync(partDir)) {
+      fs.mkdirSync(partDir, { recursive: true });
+    }
+    const partPath = path.join(partDir, `part-${partNumber}`);
     fs.writeFileSync(partPath, buffer);
 
     // Return a mock ETag for the part
