@@ -28,7 +28,7 @@ import {
   CartesianGrid 
 } from "recharts";
 
-const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB standard multipart chunk size
+const CHUNK_SIZE = 3 * 1024 * 1024; // 3MB chunk size (handles Vercel's strict 4.5MB request limit)
 
 // Curated data model for platform traffic trend
 const viewersData = [
@@ -97,6 +97,12 @@ export default function OwnerDashboard() {
   const [duration, setDuration] = useState("");
   const [posterFile, setPosterFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
+
+  // Custom streaming source toggles (handles 2GB-12GB+ files and Vercel limits)
+  const [videoSourceType, setVideoSourceType] = useState("file"); // "file" | "url"
+  const [videoUrlInput, setVideoUrlInput] = useState("");
+  const [posterSourceType, setPosterSourceType] = useState("file"); // "file" | "url"
+  const [posterUrlInput, setPosterUrlInput] = useState("");
 
   // Upload progress tracking states
   const [isUploading, setIsUploading] = useState(false);
@@ -176,8 +182,12 @@ export default function OwnerDashboard() {
 
   const startUpload = async (e) => {
     e.preventDefault();
-    if (!videoFile) {
+    if (videoSourceType === "file" && !videoFile) {
       alert("Please select a video file to upload.");
+      return;
+    }
+    if (videoSourceType === "url" && !videoUrlInput) {
+      alert("Please enter a direct streaming URL.");
       return;
     }
 
@@ -187,6 +197,68 @@ export default function OwnerDashboard() {
     setErrorMessage("");
 
     try {
+      // Direct streaming URL cataloging (immediate bypass)
+      if (videoSourceType === "url") {
+        setUploadStatus("completing");
+        setUploadProgress(50);
+        
+        const finalPoster = posterSourceType === "url" ? posterUrlInput : "";
+        const completeRes = await fetch("/api/upload/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            directVideoUrl: videoUrlInput,
+            directPosterUrl: finalPoster,
+            metadata: {
+              title,
+              description,
+              releaseYear,
+              genre,
+              duration
+            }
+          })
+        });
+
+        if (!completeRes.ok) throw new Error("Failed to register streaming video link.");
+        const finalData = await completeRes.json();
+
+        // Local storage persist fallback
+        try {
+          const localCustom = JSON.parse(localStorage.getItem("luminaea_custom_movies") || "[]");
+          const newMovie = finalData.media || {
+            id: "m-" + Date.now(),
+            title: title || "Untitled Media",
+            description: description || "",
+            videoUrl: videoUrlInput,
+            poster: finalPoster || "/placeholder-movie.jpg",
+            duration: duration ? `${duration}m` : "120m",
+            releaseYear: parseInt(releaseYear) || 2026,
+            genres: genre ? genre.split(",").map(g => g.trim()) : ["General"],
+            rating: "16+",
+            match: "95% Match",
+            isTrending: true
+          };
+
+          if (!localCustom.some(m => m.id === newMovie.id || m.title.toLowerCase() === newMovie.title.toLowerCase())) {
+            localCustom.push(newMovie);
+            localStorage.setItem("luminaea_custom_movies", JSON.stringify(localCustom));
+          }
+        } catch (lsErr) {
+          console.error("Local storage sync error:", lsErr);
+        }
+
+        setUploadStatus("success");
+        setUploadProgress(100);
+        setTitle("");
+        setDescription("");
+        setGenre("");
+        setDuration("");
+        setVideoUrlInput("");
+        setPosterUrlInput("");
+        setIsUploading(false);
+        return;
+      }
+
       // 1. Initialize Multipart Upload Session
       const initRes = await fetch("/api/upload/init", {
         method: "POST",
@@ -761,51 +833,128 @@ export default function OwnerDashboard() {
                 </div>
               </div>
 
-              {/* Thumbnail & Video File Upload Picker */}
+              {/* Media Sources Config: File Upload vs Direct URLs (Unblocks 2GB-12GB+ large files) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-                {/* Thumbnail Image Picker */}
-                <div>
-                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                    Thumbnail / Poster (JPG/PNG)
+                {/* Video Source Config */}
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
+                    Video Source Type
                   </label>
-                  <div className="relative border border-dashed border-zinc-900 rounded bg-black py-6 px-4 text-center cursor-pointer hover:border-zinc-800 transition-colors">
+                  <div className="grid grid-cols-2 gap-1 bg-zinc-950 p-1 border border-zinc-900 rounded-lg">
+                    <button
+                      type="button"
+                      onClick={() => setVideoSourceType("file")}
+                      className={`py-1.5 text-[10px] uppercase tracking-wider font-extrabold rounded transition-all duration-200 ${
+                        videoSourceType === "file"
+                          ? "bg-[#e50914] text-white"
+                          : "text-zinc-500 hover:text-white"
+                      }`}
+                      disabled={isUploading}
+                    >
+                      Local File Upload
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setVideoSourceType("url")}
+                      className={`py-1.5 text-[10px] uppercase tracking-wider font-extrabold rounded transition-all duration-200 ${
+                        videoSourceType === "url"
+                          ? "bg-[#e50914] text-white"
+                          : "text-zinc-500 hover:text-white"
+                      }`}
+                      disabled={isUploading}
+                    >
+                      Direct Stream URL
+                    </button>
+                  </div>
+
+                  {videoSourceType === "file" ? (
+                    <div className="relative border border-dashed border-[#e50914]/30 rounded bg-black py-5 px-4 text-center cursor-pointer hover:border-[#e50914] transition-colors">
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={(e) => handleFileChange(e, "video")}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        required={videoSourceType === "file"}
+                        disabled={isUploading}
+                      />
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 mx-auto text-[#e50914]/50 mb-1">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
+                      </svg>
+                      <span className="text-[11px] text-[#e50914]/70 block truncate">
+                        {videoFile ? `${videoFile.name} (${(videoFile.size / (1024*1024)).toFixed(1)} MB)` : "Choose video file (< 50MB)"}
+                      </span>
+                    </div>
+                  ) : (
                     <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleFileChange(e, "poster")}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      type="url"
+                      value={videoUrlInput}
+                      onChange={(e) => setVideoUrlInput(e.target.value)}
+                      placeholder="https://my-bucket.s3.amazonaws.com/large-movie-12gb.mp4"
+                      className="w-full bg-black border border-zinc-900 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-sm transition-colors"
+                      required={videoSourceType === "url"}
                       disabled={isUploading}
                     />
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 mx-auto text-zinc-600 mb-2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375 0 11-.75 0 .375 0 01.75 0z" />
-                    </svg>
-                    <span className="text-xs text-zinc-500 block truncate">
-                      {posterFile ? posterFile.name : "Choose thumbnail file"}
-                    </span>
-                  </div>
+                  )}
                 </div>
 
-                {/* Large Video File Picker */}
-                <div>
-                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                    Video File (MP4/MKV)
+                {/* Thumbnail Source Config */}
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
+                    Thumbnail Image Source
                   </label>
-                  <div className="relative border border-dashed border-[#e50914]/30 rounded bg-black py-6 px-4 text-center cursor-pointer hover:border-[#e50914] transition-colors">
+                  <div className="grid grid-cols-2 gap-1 bg-zinc-950 p-1 border border-zinc-900 rounded-lg">
+                    <button
+                      type="button"
+                      onClick={() => setPosterSourceType("file")}
+                      className={`py-1.5 text-[10px] uppercase tracking-wider font-extrabold rounded transition-all duration-200 ${
+                        posterSourceType === "file"
+                          ? "bg-[#e50914] text-white"
+                          : "text-zinc-500 hover:text-white"
+                      }`}
+                      disabled={isUploading}
+                    >
+                      Local File Upload
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPosterSourceType("url")}
+                      className={`py-1.5 text-[10px] uppercase tracking-wider font-extrabold rounded transition-all duration-200 ${
+                        posterSourceType === "url"
+                          ? "bg-[#e50914] text-white"
+                          : "text-zinc-500 hover:text-white"
+                      }`}
+                      disabled={isUploading}
+                    >
+                      Direct Image URL
+                    </button>
+                  </div>
+
+                  {posterSourceType === "file" ? (
+                    <div className="relative border border-dashed border-zinc-900 rounded bg-black py-5 px-4 text-center cursor-pointer hover:border-zinc-800 transition-colors">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, "poster")}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        disabled={isUploading}
+                      />
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 mx-auto text-zinc-550 mb-1">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375 0 11-.75 0 .375 0 01.75 0z" />
+                      </svg>
+                      <span className="text-[11px] text-zinc-500 block truncate font-sans">
+                        {posterFile ? posterFile.name : "Choose image file (< 2MB)"}
+                      </span>
+                    </div>
+                  ) : (
                     <input
-                      type="file"
-                      accept="video/*"
-                      onChange={(e) => handleFileChange(e, "video")}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      required
+                      type="url"
+                      value={posterUrlInput}
+                      onChange={(e) => setPosterUrlInput(e.target.value)}
+                      placeholder="https://my-bucket.s3.amazonaws.com/movie-poster.jpg"
+                      className="w-full bg-black border border-zinc-900 rounded py-3 px-4 outline-none focus:border-[#e50914] text-white text-sm transition-colors font-sans"
                       disabled={isUploading}
                     />
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 mx-auto text-[#e50914]/50 mb-2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
-                    </svg>
-                    <span className="text-xs text-[#e50914]/70 block truncate">
-                      {videoFile ? `${videoFile.name} (${(videoFile.size / (1024*1024)).toFixed(1)} MB)` : "Choose video file"}
-                    </span>
-                  </div>
+                  )}
                 </div>
               </div>
 

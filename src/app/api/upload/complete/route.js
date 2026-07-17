@@ -60,59 +60,66 @@ function ensureDbExists() {
 
 export async function POST(req) {
   try {
-    const { uploadId, fileKey, parts, metadata } = await req.json();
+    const { uploadId, fileKey, parts, metadata, directVideoUrl, directPosterUrl } = await req.json();
 
-    if (!uploadId || !fileKey || !parts) {
-      return NextResponse.json({ error: "Missing required complete parameters" }, { status: 400 });
-    }
+    let finalVideoUrl = directVideoUrl;
+    let finalPosterUrl = directPosterUrl || "/placeholder-movie.jpg";
 
-    const tempDir = path.join(os.tmpdir(), "luminaea_uploads", uploadId);
-    let finalDir = path.join(process.cwd(), "public", "videos");
-    let isServerlessFallback = false;
-
-    try {
-      if (!fs.existsSync(finalDir)) {
-        fs.mkdirSync(finalDir, { recursive: true });
-      }
-      // Test write permissions
-      const testFile = path.join(finalDir, `.write_test_${Date.now()}`);
-      fs.writeFileSync(testFile, "1");
-      fs.unlinkSync(testFile);
-    } catch (e) {
-      isServerlessFallback = true;
-      finalDir = path.join(os.tmpdir(), "luminaea_videos");
-      if (!fs.existsSync(finalDir)) {
-        fs.mkdirSync(finalDir, { recursive: true });
-      }
-    }
-
-    const finalPath = path.join(finalDir, fileKey);
-
-    // 1. Sort parts by part number to guarantee chunk order
-    const sortedParts = parts.sort((a, b) => a.partNumber - b.partNumber);
-
-    // 2. Open write stream for final output
-    const writeStream = fs.createWriteStream(finalPath);
-
-    for (const part of sortedParts) {
-      const partPath = path.join(tempDir, `part-${part.partNumber}`);
-      if (!fs.existsSync(partPath)) {
-        throw new Error(`Part ${part.partNumber} is missing from server storage.`);
+    if (!directVideoUrl) {
+      if (!uploadId || !fileKey || !parts) {
+        return NextResponse.json({ error: "Missing required complete parameters" }, { status: 400 });
       }
 
-      // Read chunk sync and write to stream
-      const chunkBuffer = fs.readFileSync(partPath);
-      writeStream.write(chunkBuffer);
-    }
+      const tempDir = path.join(os.tmpdir(), "luminaea_uploads", uploadId);
+      let finalDir = path.join(process.cwd(), "public", "videos");
+      let isServerlessFallback = false;
 
-    writeStream.end();
+      try {
+        if (!fs.existsSync(finalDir)) {
+          fs.mkdirSync(finalDir, { recursive: true });
+        }
+        // Test write permissions
+        const testFile = path.join(finalDir, `.write_test_${Date.now()}`);
+        fs.writeFileSync(testFile, "1");
+        fs.unlinkSync(testFile);
+      } catch (e) {
+        isServerlessFallback = true;
+        finalDir = path.join(os.tmpdir(), "luminaea_videos");
+        if (!fs.existsSync(finalDir)) {
+          fs.mkdirSync(finalDir, { recursive: true });
+        }
+      }
 
-    // 3. Clean up parts and temporary directories
-    for (const part of sortedParts) {
-      const partPath = path.join(tempDir, `part-${part.partNumber}`);
-      fs.unlinkSync(partPath);
+      const finalPath = path.join(finalDir, fileKey);
+
+      // 1. Sort parts by part number to guarantee chunk order
+      const sortedParts = parts.sort((a, b) => a.partNumber - b.partNumber);
+
+      // 2. Open write stream for final output
+      const writeStream = fs.createWriteStream(finalPath);
+
+      for (const part of sortedParts) {
+        const partPath = path.join(tempDir, `part-${part.partNumber}`);
+        if (!fs.existsSync(partPath)) {
+          throw new Error(`Part ${part.partNumber} is missing from server storage.`);
+        }
+
+        // Read chunk sync and write to stream
+        const chunkBuffer = fs.readFileSync(partPath);
+        writeStream.write(chunkBuffer);
+      }
+
+      writeStream.end();
+
+      // 3. Clean up parts and temporary directories
+      for (const part of sortedParts) {
+        const partPath = path.join(tempDir, `part-${part.partNumber}`);
+        fs.unlinkSync(partPath);
+      }
+      fs.rmdirSync(tempDir);
+      
+      finalVideoUrl = `/api/videos/${fileKey}`;
     }
-    fs.rmdirSync(tempDir);
 
     // 4. Save metadata details to JSON Database
     let dbSaved = false;
@@ -124,8 +131,8 @@ export async function POST(req) {
       id: "m-" + Date.now(),
       title: metadata.title || "Untitled Media",
       description: metadata.description || "",
-      videoUrl: `/api/videos/${fileKey}`,
-      poster: "/placeholder-movie.jpg", // default fallback poster
+      videoUrl: finalVideoUrl,
+      poster: finalPosterUrl,
       duration: metadata.duration ? `${metadata.duration}m` : "120m",
       releaseYear: parseInt(metadata.releaseYear) || 2026,
       genres: genreArray,
