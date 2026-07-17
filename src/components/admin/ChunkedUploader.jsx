@@ -1,9 +1,75 @@
 "use client";
 import React, { useState, useEffect } from "react";
-
 import { useAuth } from "../../context/AuthContext";
+import { 
+  Activity, 
+  Tv, 
+  TrendingUp, 
+  Users, 
+  DollarSign, 
+  Database, 
+  UploadCloud, 
+  LogOut, 
+  Terminal, 
+  Cpu, 
+  Globe, 
+  Shield, 
+  RefreshCw 
+} from "lucide-react";
+import { 
+  ResponsiveContainer, 
+  AreaChart, 
+  Area, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  Tooltip,
+  CartesianGrid 
+} from "recharts";
 
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB standard multipart chunk size
+
+// Curated data model for platform traffic trend
+const viewersData = [
+  { day: "Fri", minutes: 1200 },
+  { day: "Sat", minutes: 1900 },
+  { day: "Sun", minutes: 1450 },
+  { day: "Mon", minutes: 2800 },
+  { day: "Tue", minutes: 3400 },
+  { day: "Wed", minutes: 4200 },
+  { day: "Today", minutes: 4900 }
+];
+
+// Curated data model for revenue MRR progression
+const revenueData = [
+  { month: "Jan", revenue: 8200 },
+  { month: "Feb", revenue: 9100 },
+  { month: "Mar", revenue: 10000 },
+  { month: "Apr", revenue: 11000 },
+  { month: "May", revenue: 11800 },
+  { month: "Jun", revenue: 12000 },
+  { month: "Jul", revenue: 12840 }
+];
+
+// Custom Shadcn UI-inspired chart tooltip
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-black/90 border border-zinc-800 p-2.5 rounded-lg shadow-xl font-sans text-xs">
+        <p className="text-zinc-500 font-bold mb-1 uppercase tracking-wider text-[9px]">{label}</p>
+        {payload.map((p, idx) => (
+          <p key={idx} className="text-white font-mono flex items-center gap-1.5 mt-0.5">
+            <span style={{ backgroundColor: p.color || "#e50914" }} className="w-2 h-2 rounded-full inline-block"></span>
+            <span className="text-zinc-400 font-sans">{p.name}:</span>
+            <strong className="text-white font-black">{p.name.includes("Revenue") ? `$${p.value.toLocaleString()}` : `${p.value.toLocaleString()} mins`}</strong>
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function OwnerDashboard() {
   const { logout } = useAuth();
@@ -244,9 +310,7 @@ export default function OwnerDashboard() {
                   : "text-zinc-400 hover:text-white"
               }`}
             >
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H6v-2h6v2zm3-4H6v-2h9v2zm3-4H6V7h12v2z"/>
-              </svg>
+              <Activity className="w-4 h-4" />
               Overview & Analytics
             </button>
             <button
@@ -257,17 +321,16 @@ export default function OwnerDashboard() {
                   : "text-zinc-400 hover:text-white"
               }`}
             >
-              <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
+              <UploadCloud className="w-4 h-4" />
               Add New Media
             </button>
           </div>
 
           <button
             onClick={logout}
-            className="text-xs font-bold text-red-500 hover:text-red-400 bg-red-950/20 px-3.5 py-2.5 rounded-lg border border-red-900/30 hover:bg-red-950/40 transition-colors uppercase tracking-wider"
+            className="flex items-center gap-1.5 text-xs font-bold text-red-500 hover:text-red-400 bg-red-950/20 px-3.5 py-2.5 rounded-lg border border-red-900/30 hover:bg-red-950/40 transition-colors uppercase tracking-wider"
           >
+            <LogOut className="w-3.5 h-3.5" />
             Sign Out
           </button>
         </div>
@@ -278,157 +341,187 @@ export default function OwnerDashboard() {
         {activeTab === "analytics" ? (
           <div className="space-y-6">
             {/* Grid of 6 glowing KPI cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-              {/* Card 1: Live Users */}
-              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
-                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Live Connections</span>
-                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">{liveUsers}</span>
-                <div className="absolute top-4 right-4 bg-red-950/40 text-red-500 rounded px-1.5 py-0.5 text-[8px] uppercase font-black tracking-widest flex items-center gap-1 border border-red-900/20">
-                  <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                  Live
+            <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 font-sans">
+              {/* Card 1: Live Connections */}
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
+                <div className="flex items-center justify-between text-zinc-500">
+                  <span className="text-[10px] uppercase tracking-wider font-extrabold">Connections</span>
+                  <Users className="w-4 h-4 text-zinc-500" />
+                </div>
+                <div className="mt-4">
+                  <span className="text-2xl sm:text-3xl font-black text-white font-mono leading-none">{liveUsers}</span>
+                  <div className="text-[8px] text-red-500 font-semibold uppercase tracking-widest flex items-center gap-1 mt-2.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse inline-block"></span>
+                    Live Sockets
+                  </div>
                 </div>
               </div>
 
               {/* Card 2: Active Streams */}
-              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
-                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Active Streams</span>
-                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">{activeStreams}</span>
-                <span className="text-[9px] text-red-500 mt-1 font-semibold flex items-center gap-0.5">
-                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
-                  +4.2% streams
-                </span>
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
+                <div className="flex items-center justify-between text-zinc-500">
+                  <span className="text-[10px] uppercase tracking-wider font-extrabold">Active Streams</span>
+                  <Tv className="w-4 h-4 text-zinc-500" />
+                </div>
+                <div className="mt-4">
+                  <span className="text-2xl sm:text-3xl font-black text-white font-mono leading-none">{activeStreams}</span>
+                  <div className="text-[8px] text-red-500 font-semibold uppercase tracking-widest flex items-center gap-0.5 mt-2.5">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    +4.2% streams
+                  </div>
+                </div>
               </div>
 
               {/* Card 3: Monthly Recurring Revenue */}
-              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
-                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">MRR (Revenue)</span>
-                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">$12,840</span>
-                <span className="text-[9px] text-[#e50914] mt-1 font-semibold flex items-center gap-0.5">
-                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
-                  +8.2% MoM
-                </span>
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
+                <div className="flex items-center justify-between text-zinc-500">
+                  <span className="text-[10px] uppercase tracking-wider font-extrabold">MRR (USD)</span>
+                  <DollarSign className="w-4 h-4 text-zinc-500" />
+                </div>
+                <div className="mt-4">
+                  <span className="text-2xl sm:text-3xl font-black text-white font-mono leading-none">$12,840</span>
+                  <div className="text-[8px] text-[#e50914] font-semibold uppercase tracking-widest flex items-center gap-0.5 mt-2.5">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    +8.2% MoM
+                  </div>
+                </div>
               </div>
 
               {/* Card 4: Paid Subscribers */}
-              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
-                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Subscribers</span>
-                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">1,284</span>
-                <span className="text-[9px] text-[#e50914] mt-1 font-semibold flex items-center gap-0.5">
-                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
-                  +5.1% growth
-                </span>
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
+                <div className="flex items-center justify-between text-zinc-500">
+                  <span className="text-[10px] uppercase tracking-wider font-extrabold">Subscribers</span>
+                  <Users className="w-4 h-4 text-zinc-500" />
+                </div>
+                <div className="mt-4">
+                  <span className="text-2xl sm:text-3xl font-black text-white font-mono leading-none">1,284</span>
+                  <div className="text-[8px] text-[#e50914] font-semibold uppercase tracking-widest flex items-center gap-0.5 mt-2.5">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    +5.1% growth
+                  </div>
+                </div>
               </div>
 
-              {/* Card 5: Network Throughput */}
-              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
-                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Uplink Speed</span>
-                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">{bandwidthGbps} <span className="text-xs font-semibold text-zinc-500">Gb/s</span></span>
-                <span className="text-[9px] text-zinc-500 mt-1 font-medium font-mono">Peak Capacity: 10 Gbps</span>
+              {/* Card 5: Uplink Speed */}
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
+                <div className="flex items-center justify-between text-zinc-500">
+                  <span className="text-[10px] uppercase tracking-wider font-extrabold">Uplink Speed</span>
+                  <Activity className="w-4 h-4 text-zinc-500" />
+                </div>
+                <div className="mt-4">
+                  <span className="text-2xl sm:text-3xl font-black text-white font-mono leading-none">{bandwidthGbps} <span className="text-xs font-semibold text-zinc-500">Gb/s</span></span>
+                  <div className="text-[8px] text-zinc-500 font-semibold uppercase tracking-widest mt-2.5">
+                    Peak: 10 Gbps
+                  </div>
+                </div>
               </div>
 
               {/* Card 6: Platform Health */}
-              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
-                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Nodes CPU</span>
-                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">{cpuLoad}%</span>
-                <div className="w-full bg-zinc-900 rounded-full h-1 mt-2.5 overflow-hidden">
-                  <div 
-                    className={`h-1 rounded-full transition-all duration-300 ${
-                      cpuLoad > 18 ? 'bg-[#e50914]' : 'bg-white'
-                    }`} 
-                    style={{ width: `${cpuLoad * 4}%` }} 
-                  />
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
+                <div className="flex items-center justify-between text-zinc-500">
+                  <span className="text-[10px] uppercase tracking-wider font-extrabold">Nodes CPU</span>
+                  <Cpu className="w-4 h-4 text-zinc-500" />
+                </div>
+                <div className="mt-4 w-full">
+                  <span className="text-2xl sm:text-3xl font-black text-white font-mono leading-none">{cpuLoad}%</span>
+                  <div className="w-full bg-zinc-900 rounded-full h-1 mt-3.5 overflow-hidden">
+                    <div 
+                      className={`h-1 rounded-full transition-all duration-300 ${
+                        cpuLoad > 18 ? 'bg-[#e50914]' : 'bg-white'
+                      }`} 
+                      style={{ width: `${cpuLoad * 4}%` }} 
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Graphs Grid: SVG charts */}
+            {/* Graphs Grid: Recharts interactive charts */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Line graph card */}
               <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 lg:col-span-2 flex flex-col text-left">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300">Daily Viewers Metrics</h3>
+                    <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-350 flex items-center gap-1.5"><Activity className="w-4 h-4 text-[#e50914]" /> Daily Viewers Metrics</h3>
                     <p className="text-[10px] text-zinc-500 mt-0.5">Consolidated traffic trend in streaming minutes.</p>
                   </div>
                   <span className="text-[10px] font-semibold text-zinc-400 bg-black border border-zinc-900 px-2 py-1 rounded">7D History</span>
                 </div>
-                {/* SVG Line Graph */}
-                <div className="w-full h-[180px] relative">
-                  <svg className="w-full h-full" viewBox="0 0 500 160" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#e50914" stopOpacity="0.45" />
-                        <stop offset="100%" stopColor="#e50914" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-                    {/* Grid lines */}
-                    <line x1="0" y1="40" x2="500" y2="40" stroke="#2a2a2a" strokeWidth="1" strokeDasharray="3,3" />
-                    <line x1="0" y1="80" x2="500" y2="80" stroke="#2a2a2a" strokeWidth="1" strokeDasharray="3,3" />
-                    <line x1="0" y1="120" x2="500" y2="120" stroke="#2a2a2a" strokeWidth="1" strokeDasharray="3,3" />
-                    {/* Area under the line */}
-                    <path
-                      d="M 0 140 Q 80 110 160 120 T 320 60 T 420 50 L 500 20 L 500 150 L 0 150 Z"
-                      fill="url(#lineGrad)"
-                    />
-                    {/* Line path */}
-                    <path
-                      d="M 0 140 Q 80 110 160 120 T 320 60 T 420 50 L 500 20"
-                      fill="none"
-                      stroke="#e50914"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    />
-                    {/* Dots at key points */}
-                    <circle cx="160" cy="120" r="4" fill="#e50914" stroke="#000000" strokeWidth="1.5" />
-                    <circle cx="320" cy="60" r="4" fill="#e50914" stroke="#000000" strokeWidth="1.5" />
-                    <circle cx="500" cy="20" r="4" fill="#e50914" stroke="#000000" strokeWidth="1.5" />
-                  </svg>
-                  {/* Axis labels */}
-                  <div className="flex justify-between items-center text-[9px] font-semibold text-zinc-500 mt-2 font-mono px-1">
-                    <span>Fri</span>
-                    <span>Sat</span>
-                    <span>Sun</span>
-                    <span>Mon</span>
-                    <span>Tue</span>
-                    <span>Wed</span>
-                    <span>Today</span>
-                  </div>
+                
+                {/* Recharts Area Chart */}
+                <div className="w-full h-[180px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={viewersData} margin={{ top: 5, right: 5, left: -25, bottom: 5 }}>
+                      <defs>
+                        <linearGradient id="colorMinutes" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#e50914" stopOpacity="0.35"/>
+                          <stop offset="95%" stopColor="#e50914" stopOpacity="0"/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" vertical={false} />
+                      <XAxis 
+                        dataKey="day" 
+                        stroke="#52525b" 
+                        fontSize={10} 
+                        tickLine={false} 
+                        axisLine={false} 
+                      />
+                      <YAxis 
+                        stroke="#52525b" 
+                        fontSize={10} 
+                        tickLine={false} 
+                        axisLine={false} 
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Area 
+                        name="Watch Time"
+                        type="monotone" 
+                        dataKey="minutes" 
+                        stroke="#e50914" 
+                        strokeWidth={2.5}
+                        fillOpacity={1} 
+                        fill="url(#colorMinutes)" 
+                        activeDot={{ r: 5, stroke: "#000000", strokeWidth: 2, fill: "#e50914" }}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
 
               {/* Monthly Revenue growth bar chart */}
               <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col text-left justify-between">
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300">Revenue Growth Trend</h3>
+                  <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-350 flex items-center gap-1.5"><TrendingUp className="w-4 h-4 text-[#e50914]" /> Revenue Growth Trend</h3>
                   <p className="text-[10px] text-zinc-500 mt-0.5">Monthly Recurring Revenue progression (USD).</p>
                 </div>
                 
-                <div className="w-full h-[150px] relative mt-4">
-                  <svg className="w-full h-full" viewBox="0 0 240 120" preserveAspectRatio="none">
-                    {/* Grid lines */}
-                    <line x1="0" y1="30" x2="240" y2="30" stroke="#1f1f1f" strokeWidth="1" strokeDasharray="2,2" />
-                    <line x1="0" y1="60" x2="240" y2="60" stroke="#1f1f1f" strokeWidth="1" strokeDasharray="2,2" />
-                    <line x1="0" y1="90" x2="240" y2="90" stroke="#1f1f1f" strokeWidth="1" strokeDasharray="2,2" />
-                    
-                    <rect x="15" y="72" width="16" height="48" fill="#3f3f46" rx="2" />
-                    <rect x="47" y="58" width="16" height="62" fill="#52525b" rx="2" />
-                    <rect x="79" y="42" width="16" height="78" fill="#a1a1aa" rx="2" />
-                    <rect x="111" y="30" width="16" height="90" fill="#d4d4d8" rx="2" />
-                    <rect x="143" y="22" width="16" height="98" fill="#e50914" rx="2" opacity="0.6" />
-                    <rect x="175" y="14" width="16" height="106" fill="#e50914" rx="2" opacity="0.8" />
-                    <rect x="207" y="5" width="16" height="115" fill="#e50914" rx="2" />
-                  </svg>
-                  
-                  {/* Axis labels */}
-                  <div className="flex justify-between items-center text-[9px] font-semibold text-zinc-500 mt-2 font-mono px-1">
-                    <span>Jan</span>
-                    <span>Feb</span>
-                    <span>Mar</span>
-                    <span>Apr</span>
-                    <span>May</span>
-                    <span>Jun</span>
-                    <span>Jul</span>
-                  </div>
+                {/* Recharts Bar Chart */}
+                <div className="w-full h-[180px] mt-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={revenueData} margin={{ top: 5, right: 5, left: -25, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" vertical={false} />
+                      <XAxis 
+                        dataKey="month" 
+                        stroke="#52525b" 
+                        fontSize={10} 
+                        tickLine={false} 
+                        axisLine={false} 
+                      />
+                      <YAxis 
+                        stroke="#52525b" 
+                        fontSize={10} 
+                        tickLine={false} 
+                        axisLine={false} 
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Bar 
+                        name="Revenue"
+                        dataKey="revenue" 
+                        fill="#e50914" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>

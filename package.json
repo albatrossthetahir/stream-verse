@@ -11,7 +11,9 @@
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.3"
+    "next": "14.2.3",
+    "lucide-react": "^0.395.0",
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
     "postcss": "^8",
