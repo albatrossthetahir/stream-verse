@@ -291,7 +291,7 @@ export default function OwnerDashboard() {
       {/* Dashboard Top Header */}
       <div className="bg-black border-b border-zinc-900 px-6 md:px-12 py-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <span className="text-[#e50914] font-black text-2xl md:text-3xl tracking-widest uppercase select-none font-sans">
+          <span className="text-[#e50914] font-black text-2xl md:text-3xl tracking-widest uppercase select-none font-geom">
             Luminaea
           </span>
           <span className="bg-red-950/40 text-[#e50914] border border-red-900/30 text-[9px] uppercase font-black tracking-widest px-2 py-0.5 rounded">

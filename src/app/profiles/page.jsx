@@ -81,7 +81,7 @@ export default function ProfilesPage() {
 
       {/* Top Header branding constraint check */}
       <header className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
-        <h1 className="text-2xl font-bold tracking-widest text-[#e50914] uppercase">
+        <h1 className="text-2xl font-bold tracking-widest text-[#e50914] uppercase font-geom">
           Luminaea
         </h1>
         <button

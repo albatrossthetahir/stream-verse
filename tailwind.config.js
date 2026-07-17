@@ -13,6 +13,10 @@ module.exports = {
       colors: {
         'regal-blue': '#243c5a',
       },
+      fontFamily: {
+        geom: ["Geom", "sans-serif"],
+        space: ["var(--font-space-grotesk)", "sans-serif"],
+      }
     }
   },
   plugins: [],

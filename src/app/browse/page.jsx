@@ -110,7 +110,7 @@ export default function BrowsePage() {
           {/* Logo Branding constraint check */}
           <h1
             onClick={() => router.push("/")}
-            className="text-2xl md:text-3xl font-black tracking-widest text-[#e50914] uppercase cursor-pointer select-none"
+            className="text-2xl md:text-3xl font-black tracking-widest text-[#e50914] uppercase cursor-pointer select-none font-geom"
           >
             Luminaea
           </h1>
