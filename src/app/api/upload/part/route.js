@@ -3,6 +3,10 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 
+// Route segment config — increase body size and timeout for chunk uploads
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60; // seconds
+
 export async function POST(req) {
   try {
     const formData = await req.formData();

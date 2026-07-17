@@ -28,7 +28,7 @@ import {
   CartesianGrid 
 } from "recharts";
 
-const CHUNK_SIZE = 3 * 1024 * 1024; // 3MB chunk size (handles Vercel's strict 4.5MB request limit)
+const CHUNK_SIZE = 1 * 1024 * 1024; // 1MB per chunk (safely under Vercel's 4.5MB gateway limit with FormData overhead)
 
 // Curated data model for platform traffic trend
 const viewersData = [
@@ -302,7 +302,8 @@ export default function OwnerDashboard() {
         });
 
         if (!partRes.ok) {
-          throw new Error(`Failed uploading chunk #${partNumber}`);
+          const errText = await partRes.text().catch(() => "");
+          throw new Error(`Failed uploading chunk #${partNumber} (HTTP ${partRes.status}): ${errText}`);
         }
 
         const { ETag } = await partRes.json();

@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "src/app/api/upload/part/route.js": {
+      "maxDuration": 60
+    },
+    "src/app/api/upload/complete/route.js": {
+      "maxDuration": 120
+    }
+  }
+}
