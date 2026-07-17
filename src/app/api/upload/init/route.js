@@ -30,7 +30,10 @@ export async function POST(req) {
       tempDir: `/.temp_uploads/${uploadId}`
     });
   } catch (err) {
+    try {
+      fs.writeFileSync(path.join(process.cwd(), "error_log.txt"), `Upload init error: ${err.stack || err.message}`);
+    } catch (e) {}
     console.error("Upload init route error:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
   }
 }
