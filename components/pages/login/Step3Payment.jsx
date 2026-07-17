@@ -15,8 +15,9 @@ const Step3Payment = ({ selectedPlan, billingCycle, onSubmit, onBack }) => {
     mobile: { name: 'Mobile', price: billingCycle === 'monthly' ? '$4.99/mo' : '$39.99/yr' },
     basic: { name: 'Basic', price: billingCycle === 'monthly' ? '$9.99/mo' : '$79.99/yr' },
     standard: { name: 'Standard', price: billingCycle === 'monthly' ? '$15.49/mo' : '$123.99/yr' },
-    premium: { name: 'Premium', price: billingCycle === 'monthly' ? '$19.99/mo' : '$159.99/yr' }
-  }[selectedPlan] || { name: 'Premium', price: billingCycle === 'monthly' ? '$19.99/mo' : '$159.99/yr' };
+    premium: { name: 'Premium', price: billingCycle === 'monthly' ? '$19.99/mo' : '$159.99/yr' },
+    promo_free: { name: 'Promotional Launch Offer', price: '$0.00' }
+  }[selectedPlan] || { name: 'Promotional Launch Offer', price: '$0.00' };
 
   // Formatter for card number (adds spaces every 4 digits)
   const handleCardNumberChange = (e) => {
@@ -100,7 +101,7 @@ const Step3Payment = ({ selectedPlan, billingCycle, onSubmit, onBack }) => {
   return (
     <div className='max-w-[450px] w-full bg-black/75 rounded-lg relative z-20 p-8 sm:p-14 border border-zinc-800/40 shadow-2xl backdrop-blur-md select-none text-left'>
       <div className="text-xs font-semibold text-zinc-400 mb-2 uppercase tracking-widest">
-        Step <span className="text-white">3</span> of <span className="text-white">3</span>
+        Step <span className="text-white">2</span> of <span className="text-white">2</span>
       </div>
       
       <div className="flex items-center gap-2 text-emerald-500 mb-4">
@@ -118,8 +119,10 @@ const Step3Payment = ({ selectedPlan, billingCycle, onSubmit, onBack }) => {
       {/* Plan Summary Box */}
       <div className="bg-zinc-900/60 border border-zinc-800 p-4 rounded mb-6 flex justify-between items-center text-sm font-semibold">
         <div>
-          <span className="text-white block font-bold text-base">{planInfo.name} Plan</span>
-          <span className="text-zinc-400 text-xs font-medium capitalize">{billingCycle} Billing</span>
+          <span className="text-white block font-bold text-base">{planInfo.name}</span>
+          <span className="text-zinc-400 text-xs font-medium capitalize">
+            {selectedPlan === 'promo_free' ? 'Promotional Trial' : `${billingCycle} Billing`}
+          </span>
         </div>
         <div className="text-[#e50914] text-lg font-black">{planInfo.price}</div>
       </div>

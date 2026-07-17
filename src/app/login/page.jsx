@@ -22,8 +22,7 @@ export default function Login() {
     const registered = localStorage.getItem("streamverse_registered_users");
     if (!registered) {
       const defaults = {
-        'user@example.com': { password: 'password123', plan: 'standard', billingCycle: 'monthly' },
-        'admin@example.com': { password: 'admin123', plan: 'premium', billingCycle: 'yearly' }
+        'kalaiwalatahir@gmail.com': { password: 'EQ5Yn5m2xru0ChYR', plan: 'premium', billingCycle: 'yearly' }
       };
       localStorage.setItem("streamverse_registered_users", JSON.stringify(defaults));
     }
@@ -37,7 +36,8 @@ export default function Login() {
     const users = registered ? JSON.parse(registered) : {};
     
     const emailKey = enteredEmail.toLowerCase();
-    const isRegistered = !!users[emailKey] || emailKey === 'user@example.com' || emailKey === 'admin@example.com';
+    const isRegistered = !!users[emailKey] || 
+                         emailKey === 'kalaiwalatahir@gmail.com';
     
     if (isRegistered) {
       // Direct them to log in
@@ -50,12 +50,8 @@ export default function Login() {
 
   const handlePasswordNext = (enteredPassword) => {
     setPassword(enteredPassword);
-    setView('signup_step2');
-  };
-
-  const handlePlanNext = ({ plan: chosenPlan, billingCycle: chosenCycle }) => {
-    setPlan(chosenPlan);
-    setBillingCycle(chosenCycle);
+    setPlan('promo_free');
+    setBillingCycle('monthly');
     setView('signup_step3');
   };
 
@@ -144,7 +140,7 @@ export default function Login() {
           selectedPlan={plan} 
           billingCycle={billingCycle} 
           onSubmit={handlePaymentSubmit} 
-          onBack={() => setView('signup_step2')} 
+          onBack={() => setView('signup_step1')} 
         />
       )}
     </div>

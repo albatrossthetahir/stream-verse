@@ -53,8 +53,7 @@ const SignInView = ({ initialEmail = '', onSignUpNow, onLoginSuccess }) => {
       
       const emailKey = email.toLowerCase();
       // Allow pre-existing mock accounts
-      const isDefaultUser = (emailKey === 'user@example.com' && password === 'password123') ||
-                            (emailKey === 'admin@example.com' && password === 'admin123');
+      const isDefaultUser = (emailKey === 'kalaiwalatahir@gmail.com' && password === 'EQ5Yn5m2xru0ChYR');
       
       if (users[emailKey]) {
         if (users[emailKey].password !== password) {
