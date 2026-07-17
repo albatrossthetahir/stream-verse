@@ -25,7 +25,18 @@ export default function BrowsePage() {
       const res = await fetch("/api/media");
       if (res.ok) {
         const data = await res.json();
-        setMovies(data);
+        // Load custom browser-stored movies (if server is read-only serverless host)
+        let localCustom = [];
+        try {
+          localCustom = JSON.parse(localStorage.getItem("luminaea_custom_movies") || "[]");
+        } catch (e) {}
+        
+        // Exclude duplicate titles already registered in DB
+        const filteredLocal = localCustom.filter(
+          (localMovie) => !data.some((dbMovie) => dbMovie.id === localMovie.id || dbMovie.title.toLowerCase() === localMovie.title.toLowerCase())
+        );
+
+        setMovies([...data, ...filteredLocal]);
       }
     } catch (err) {
       console.error("Failed to fetch movies catalog:", err);

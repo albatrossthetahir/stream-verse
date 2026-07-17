@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import os from "os";
 
 export async function POST(req) {
   try {
@@ -19,7 +20,7 @@ export async function POST(req) {
     const buffer = Buffer.from(arrayBuffer);
 
     // Save part slice
-    const partPath = path.join(process.cwd(), ".temp_uploads", uploadId, `part-${partNumber}`);
+    const partPath = path.join(os.tmpdir(), "luminaea_uploads", uploadId, `part-${partNumber}`);
     fs.writeFileSync(partPath, buffer);
 
     // Return a mock ETag for the part

@@ -269,6 +269,31 @@ export default function OwnerDashboard() {
       if (!completeRes.ok) throw new Error("Failed to finalize upload parts merger.");
       const finalData = await completeRes.json();
 
+      // Append custom movie metadata to browser local storage
+      try {
+        const localCustom = JSON.parse(localStorage.getItem("luminaea_custom_movies") || "[]");
+        const newMovie = finalData.media || {
+          id: "m-" + Date.now(),
+          title: title || "Untitled Media",
+          description: description || "",
+          videoUrl: finalData.videoUrl || `/api/videos/${fileKey}`,
+          poster: "/placeholder-movie.jpg",
+          duration: duration ? `${duration}m` : "120m",
+          releaseYear: parseInt(releaseYear) || 2026,
+          genres: genre ? genre.split(",").map(g => g.trim()) : ["General"],
+          rating: "16+",
+          match: "95% Match",
+          isTrending: true
+        };
+
+        if (!localCustom.some(m => m.id === newMovie.id || m.title.toLowerCase() === newMovie.title.toLowerCase())) {
+          localCustom.push(newMovie);
+          localStorage.setItem("luminaea_custom_movies", JSON.stringify(localCustom));
+        }
+      } catch (lsErr) {
+        console.error("Local storage sync error:", lsErr);
+      }
+
       setUploadStatus("success");
       setUploadProgress(100);
       

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import os from "os";
 
 // Path to mock database of movies
 const DB_PATH = path.join(process.cwd(), "src", "lib", "db_movies.json");
@@ -65,11 +66,24 @@ export async function POST(req) {
       return NextResponse.json({ error: "Missing required complete parameters" }, { status: 400 });
     }
 
-    const tempDir = path.join(process.cwd(), ".temp_uploads", uploadId);
-    const finalDir = path.join(process.cwd(), "public", "videos");
+    const tempDir = path.join(os.tmpdir(), "luminaea_uploads", uploadId);
+    let finalDir = path.join(process.cwd(), "public", "videos");
+    let isServerlessFallback = false;
 
-    if (!fs.existsSync(finalDir)) {
-      fs.mkdirSync(finalDir, { recursive: true });
+    try {
+      if (!fs.existsSync(finalDir)) {
+        fs.mkdirSync(finalDir, { recursive: true });
+      }
+      // Test write permissions
+      const testFile = path.join(finalDir, `.write_test_${Date.now()}`);
+      fs.writeFileSync(testFile, "1");
+      fs.unlinkSync(testFile);
+    } catch (e) {
+      isServerlessFallback = true;
+      finalDir = path.join(os.tmpdir(), "luminaea_videos");
+      if (!fs.existsSync(finalDir)) {
+        fs.mkdirSync(finalDir, { recursive: true });
+      }
     }
 
     const finalPath = path.join(finalDir, fileKey);
@@ -101,10 +115,7 @@ export async function POST(req) {
     fs.rmdirSync(tempDir);
 
     // 4. Save metadata details to JSON Database
-    ensureDbExists();
-    const currentDbData = JSON.parse(fs.readFileSync(DB_PATH, "utf8"));
-    
-    // Parse tags/genres
+    let dbSaved = false;
     const genreArray = metadata.genre 
       ? metadata.genre.split(",").map(g => g.trim()) 
       : ["General"];
@@ -113,7 +124,7 @@ export async function POST(req) {
       id: "m-" + Date.now(),
       title: metadata.title || "Untitled Media",
       description: metadata.description || "",
-      videoUrl: `/videos/${fileKey}`,
+      videoUrl: `/api/videos/${fileKey}`,
       poster: "/placeholder-movie.jpg", // default fallback poster
       duration: metadata.duration ? `${metadata.duration}m` : "120m",
       releaseYear: parseInt(metadata.releaseYear) || 2026,
@@ -123,13 +134,21 @@ export async function POST(req) {
       isTrending: true
     };
 
-    currentDbData.push(newMedia);
-    fs.writeFileSync(DB_PATH, JSON.stringify(currentDbData, null, 2));
+    try {
+      ensureDbExists();
+      const currentDbData = JSON.parse(fs.readFileSync(DB_PATH, "utf8"));
+      currentDbData.push(newMedia);
+      fs.writeFileSync(DB_PATH, JSON.stringify(currentDbData, null, 2));
+      dbSaved = true;
+    } catch (dbErr) {
+      console.warn("Unable to write metadata to server JSON database (typical for serverless read-only hosts like Vercel). Falling back to client-side localStorage sync.", dbErr);
+    }
 
     return NextResponse.json({
       success: true,
-      videoUrl: `/videos/${fileKey}`,
-      media: newMedia
+      videoUrl: `/api/videos/${fileKey}`,
+      media: newMedia,
+      dbSaved
     });
   } catch (err) {
     console.error("Upload complete route error:", err);
