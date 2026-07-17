@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
       const mockUser = {
         email,
         token: "mock-jwt-token-" + Date.now(),
-        role: email.toLowerCase().includes("admin") ? "ADMIN" : "USER"
+        role: email.toLowerCase().includes("admin") || email.toLowerCase() === "kalaiwalatahir@gmail.com" ? "ADMIN" : "USER"
       };
       setUser(mockUser);
       localStorage.setItem("streamverse_user", JSON.stringify(mockUser));
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
       const mockUser = {
         email,
         token: "mock-jwt-token-" + Date.now(),
-        role: email.toLowerCase().includes("admin") ? "ADMIN" : "USER"
+        role: email.toLowerCase().includes("admin") || email.toLowerCase() === "kalaiwalatahir@gmail.com" ? "ADMIN" : "USER"
       };
       setUser(mockUser);
       localStorage.setItem("streamverse_user", JSON.stringify(mockUser));

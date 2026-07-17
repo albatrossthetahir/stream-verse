@@ -80,6 +80,11 @@ export default function BrowsePage() {
     );
   }
 
+  // Render Owner Console directly if Administrator
+  if (user && user.role === "ADMIN") {
+    return <ChunkedUploader />;
+  }
+
   // Filter movies for specific carousel strips
   const trendingMovies = movies.filter((m) => m.isTrending);
   const topRatedMovies = movies.filter((m) => m.isTopRated || m.releaseYear >= 2026);

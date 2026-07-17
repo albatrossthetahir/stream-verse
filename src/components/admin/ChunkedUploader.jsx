@@ -1,9 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
+import { useAuth } from "../../context/AuthContext";
+
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB standard multipart chunk size
 
 export default function OwnerDashboard() {
+  const { logout } = useAuth();
   // Navigation State
   const [activeTab, setActiveTab] = useState("analytics"); // "analytics" | "upload"
 
@@ -218,44 +221,54 @@ export default function OwnerDashboard() {
   };
 
   return (
-    <div className="bg-black border border-zinc-900 text-white rounded-xl shadow-2xl overflow-hidden max-w-5xl w-full mx-auto font-sans relative flex flex-col min-h-[80vh] md:min-h-[600px] select-none">
+    <div className="bg-black text-white font-sans relative flex flex-col min-h-screen w-full select-none">
       {/* Dashboard Top Header */}
-      <div className="bg-zinc-950/40 border-b border-zinc-900 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-600 animate-pulse"></span>
-            <h2 className="text-xl font-bold tracking-wide text-white">Owner Admin Console</h2>
-          </div>
-          <p className="text-xs text-zinc-500 mt-0.5">StreamVerse platform control center & analytics dashboard.</p>
+      <div className="bg-black border-b border-zinc-900 px-6 md:px-12 py-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <span className="text-[#e50914] font-black text-2xl md:text-3xl tracking-widest uppercase select-none font-sans">
+            Luminaea
+          </span>
+          <span className="bg-red-950/40 text-[#e50914] border border-red-900/30 text-[9px] uppercase font-black tracking-widest px-2 py-0.5 rounded">
+            Control Room
+          </span>
         </div>
 
         {/* Tab switch buttons */}
-        <div className="flex bg-black p-1 border border-zinc-900 rounded-lg shrink-0">
+        <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+          <div className="flex bg-zinc-950 border border-zinc-900 p-1 rounded-lg shrink-0">
+            <button
+              onClick={() => setActiveTab("analytics")}
+              className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded transition-all duration-200 ${
+                activeTab === "analytics"
+                  ? "bg-[#e50914] text-white shadow-lg shadow-red-900/10"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H6v-2h6v2zm3-4H6v-2h9v2zm3-4H6V7h12v2z"/>
+              </svg>
+              Overview & Analytics
+            </button>
+            <button
+              onClick={() => setActiveTab("upload")}
+              className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded transition-all duration-200 ${
+                activeTab === "upload"
+                  ? "bg-[#e50914] text-white shadow-lg shadow-red-900/10"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Add New Media
+            </button>
+          </div>
+
           <button
-            onClick={() => setActiveTab("analytics")}
-            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded transition-all duration-200 ${
-              activeTab === "analytics"
-                ? "bg-[#e50914] text-white shadow-lg shadow-red-900/10"
-                : "text-zinc-400 hover:text-white"
-            }`}
+            onClick={logout}
+            className="text-xs font-bold text-red-500 hover:text-red-400 bg-red-950/20 px-3.5 py-2.5 rounded-lg border border-red-900/30 hover:bg-red-950/40 transition-colors uppercase tracking-wider"
           >
-            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H6v-2h6v2zm3-4H6v-2h9v2zm3-4H6V7h12v2z"/>
-            </svg>
-            Overview & Analytics
-          </button>
-          <button
-            onClick={() => setActiveTab("upload")}
-            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded transition-all duration-200 ${
-              activeTab === "upload"
-                ? "bg-[#e50914] text-white shadow-lg shadow-red-900/10"
-                : "text-zinc-400 hover:text-white"
-            }`}
-          >
-            <svg className="w-4 h-4 fill-none stroke-current" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            Add New Media
+            Sign Out
           </button>
         </div>
       </div>
@@ -264,13 +277,13 @@ export default function OwnerDashboard() {
       <div className="p-6 flex-grow overflow-y-auto">
         {activeTab === "analytics" ? (
           <div className="space-y-6">
-            {/* Grid of 4 glowing KPI cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Grid of 6 glowing KPI cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
               {/* Card 1: Live Users */}
               <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
                 <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Live Connections</span>
-                <span className="text-3xl font-black text-white mt-1.5 font-mono">{liveUsers}</span>
-                <div className="absolute top-4 right-4 bg-red-950/40 text-red-500 rounded px-1.5 py-0.5 text-[9px] uppercase font-black tracking-widest flex items-center gap-1 border border-red-900/20">
+                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">{liveUsers}</span>
+                <div className="absolute top-4 right-4 bg-red-950/40 text-red-500 rounded px-1.5 py-0.5 text-[8px] uppercase font-black tracking-widest flex items-center gap-1 border border-red-900/20">
                   <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>
                   Live
                 </div>
@@ -279,24 +292,44 @@ export default function OwnerDashboard() {
               {/* Card 2: Active Streams */}
               <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
                 <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Active Streams</span>
-                <span className="text-3xl font-black text-white mt-1.5 font-mono">{activeStreams}</span>
-                <span className="text-[10px] text-red-500 mt-1 font-semibold flex items-center gap-0.5">
+                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">{activeStreams}</span>
+                <span className="text-[9px] text-red-500 mt-1 font-semibold flex items-center gap-0.5">
                   <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
                   +4.2% streams
                 </span>
               </div>
 
-              {/* Card 3: Network Throughput */}
+              {/* Card 3: Monthly Recurring Revenue */}
               <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
-                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Uplink Speed</span>
-                <span className="text-3xl font-black text-white mt-1.5 font-mono">{bandwidthGbps} <span className="text-sm font-semibold text-zinc-500">Gbps</span></span>
-                <span className="text-[10px] text-zinc-500 mt-1 font-medium font-mono">Peak Capacity: 10 Gbps</span>
+                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">MRR (Revenue)</span>
+                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">$12,840</span>
+                <span className="text-[9px] text-[#e50914] mt-1 font-semibold flex items-center gap-0.5">
+                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
+                  +8.2% MoM
+                </span>
               </div>
 
-              {/* Card 4: Platform Health */}
+              {/* Card 4: Paid Subscribers */}
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
+                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Subscribers</span>
+                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">1,284</span>
+                <span className="text-[9px] text-[#e50914] mt-1 font-semibold flex items-center gap-0.5">
+                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5H7z"/></svg>
+                  +5.1% growth
+                </span>
+              </div>
+
+              {/* Card 5: Network Throughput */}
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
+                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Uplink Speed</span>
+                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">{bandwidthGbps} <span className="text-xs font-semibold text-zinc-500">Gb/s</span></span>
+                <span className="text-[9px] text-zinc-500 mt-1 font-medium font-mono">Peak Capacity: 10 Gbps</span>
+              </div>
+
+              {/* Card 6: Platform Health */}
               <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 flex flex-col items-start relative overflow-hidden group hover:border-zinc-800 transition-colors duration-200">
                 <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Nodes CPU</span>
-                <span className="text-3xl font-black text-white mt-1.5 font-mono">{cpuLoad}%</span>
+                <span className="text-2xl sm:text-3xl font-black text-white mt-1.5 font-mono">{cpuLoad}%</span>
                 <div className="w-full bg-zinc-900 rounded-full h-1 mt-2.5 overflow-hidden">
                   <div 
                     className={`h-1 rounded-full transition-all duration-300 ${
@@ -363,7 +396,46 @@ export default function OwnerDashboard() {
                 </div>
               </div>
 
-              {/* Health and Devices Distribution Column */}
+              {/* Monthly Revenue growth bar chart */}
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col text-left justify-between">
+                <div>
+                  <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300">Revenue Growth Trend</h3>
+                  <p className="text-[10px] text-zinc-500 mt-0.5">Monthly Recurring Revenue progression (USD).</p>
+                </div>
+                
+                <div className="w-full h-[150px] relative mt-4">
+                  <svg className="w-full h-full" viewBox="0 0 240 120" preserveAspectRatio="none">
+                    {/* Grid lines */}
+                    <line x1="0" y1="30" x2="240" y2="30" stroke="#1f1f1f" strokeWidth="1" strokeDasharray="2,2" />
+                    <line x1="0" y1="60" x2="240" y2="60" stroke="#1f1f1f" strokeWidth="1" strokeDasharray="2,2" />
+                    <line x1="0" y1="90" x2="240" y2="90" stroke="#1f1f1f" strokeWidth="1" strokeDasharray="2,2" />
+                    
+                    <rect x="15" y="72" width="16" height="48" fill="#3f3f46" rx="2" />
+                    <rect x="47" y="58" width="16" height="62" fill="#52525b" rx="2" />
+                    <rect x="79" y="42" width="16" height="78" fill="#a1a1aa" rx="2" />
+                    <rect x="111" y="30" width="16" height="90" fill="#d4d4d8" rx="2" />
+                    <rect x="143" y="22" width="16" height="98" fill="#e50914" rx="2" opacity="0.6" />
+                    <rect x="175" y="14" width="16" height="106" fill="#e50914" rx="2" opacity="0.8" />
+                    <rect x="207" y="5" width="16" height="115" fill="#e50914" rx="2" />
+                  </svg>
+                  
+                  {/* Axis labels */}
+                  <div className="flex justify-between items-center text-[9px] font-semibold text-zinc-500 mt-2 font-mono px-1">
+                    <span>Jan</span>
+                    <span>Feb</span>
+                    <span>Mar</span>
+                    <span>Apr</span>
+                    <span>May</span>
+                    <span>Jun</span>
+                    <span>Jul</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Section: Hourly traffic bars + Live Log + Insights */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Device distribution & Platform details */}
               <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col text-left justify-between gap-6">
                 <div>
                   <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300 mb-4">Device Distribution</h3>
@@ -412,31 +484,9 @@ export default function OwnerDashboard() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Bottom Section: Hourly traffic bars + Live Log */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Traffic bars */}
-              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col text-left">
-                <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300 mb-1">Hourly Load Peaks</h3>
-                <p className="text-[10px] text-zinc-500 mb-6">Bandwidth levels across peak local hours.</p>
-                <div className="flex items-end justify-between gap-2 h-[120px] pt-4 px-2">
-                  {[20, 35, 15, 60, 85, 95, 40].map((h, i) => (
-                    <div key={i} className="flex-grow flex flex-col items-center gap-2">
-                      <div className="w-full bg-zinc-900 h-[80px] rounded relative overflow-hidden">
-                        <div 
-                          className="bg-gradient-to-t from-[#e50914] to-white w-full rounded absolute bottom-0 transition-all duration-500" 
-                          style={{ height: `${h}%` }}
-                        />
-                      </div>
-                      <span className="text-[8px] font-semibold text-zinc-500 font-mono">{["08h", "12h", "15h", "18h", "20h", "22h", "00h"][i]}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               {/* Event Logging System */}
-              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 lg:col-span-2 flex flex-col text-left">
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col text-left">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300">Live Gateway activity logs</h3>
                   <span className="h-1.5 w-1.5 rounded-full bg-[#e50914] animate-pulse"></span>
@@ -462,6 +512,38 @@ export default function OwnerDashboard() {
                       </div>
                     );
                   })}
+                </div>
+              </div>
+
+              {/* Business Insights Card */}
+              <div className="bg-zinc-950/20 border border-zinc-900 rounded-xl p-5 flex flex-col text-left justify-between gap-4">
+                <div>
+                  <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-300 mb-4">Business Insights</h3>
+                  <div className="space-y-4 text-xs">
+                    <div className="flex gap-2.5 items-start">
+                      <div className="w-1.5 h-1.5 bg-[#e50914] rounded-full mt-1.5 shrink-0" />
+                      <div>
+                        <strong className="text-white block font-medium">Conversion Performance</strong>
+                        <span className="text-zinc-400 text-[11px] leading-relaxed">Free trial codes converting to active paid plans at 78.4%. Premium yearly subscriptions are the highest growth category.</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2.5 items-start">
+                      <div className="w-1.5 h-1.5 bg-white rounded-full mt-1.5 shrink-0" />
+                      <div>
+                        <strong className="text-white block font-medium">Bandwidth Capacity Spikes</strong>
+                        <span className="text-zinc-400 text-[11px] leading-relaxed">Traffic spikes peak between 20:00 - 22:00. CDN cache hit ratio remains stable at 98.4% without node latency.</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2.5 items-start">
+                      <div className="w-1.5 h-1.5 bg-zinc-700 rounded-full mt-1.5 shrink-0" />
+                      <div>
+                        <strong className="text-white block font-medium">Mobile Expansion</strong>
+                        <span className="text-zinc-400 text-[11px] leading-relaxed">Smart TV apps and Mobile viewers account for 46% of total streams. Promotional marketing targeted for iOS/Android apps is recommended.</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
