@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../../src/context/AuthContext';
 import CommenInput from '../../commenElements/CommenInput';
+import GoogleLoginButton from './GoogleLoginButton';
 
 const SignInView = ({ initialEmail = '', onSignUpNow, onLoginSuccess }) => {
   const [email, setEmail] = useState(initialEmail);
@@ -170,6 +171,16 @@ const SignInView = ({ initialEmail = '', onSignUpNow, onLoginSuccess }) => {
           <a href="#" className="hover:underline hover:text-zinc-300">Need help?</a>
         </div>
       </form>
+
+      <div className="flex items-center my-6">
+        <div className="flex-grow border-t border-zinc-800/80"></div>
+        <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-zinc-500">OR</span>
+        <div className="flex-grow border-t border-zinc-800/80"></div>
+      </div>
+
+      <div className="mb-6">
+        <GoogleLoginButton />
+      </div>
 
       <div className="text-zinc-500 font-medium text-sm">
         New to StreamVerse?{' '}

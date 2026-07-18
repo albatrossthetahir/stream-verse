@@ -126,6 +126,61 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = async (email, name) => {
+    setLoading(true);
+    try {
+      const registered = localStorage.getItem("streamverse_registered_users");
+      const users = registered ? JSON.parse(registered) : {};
+      
+      const emailKey = email.toLowerCase();
+      if (!users[emailKey]) {
+        users[emailKey] = {
+          name: name,
+          isGoogleUser: true,
+          plan: 'promo_free',
+          billingCycle: 'monthly'
+        };
+        localStorage.setItem("streamverse_registered_users", JSON.stringify(users));
+      }
+
+      const googleUser = {
+        email,
+        name,
+        isGoogle: true,
+        token: "google-jwt-token-" + Date.now(),
+        role: email.toLowerCase().includes("admin") || email.toLowerCase() === "kalaiwalatahir@gmail.com" ? "ADMIN" : "USER"
+      };
+      setUser(googleUser);
+      localStorage.setItem("streamverse_user", JSON.stringify(googleUser));
+
+      const userProfiles = localStorage.getItem(`streamverse_profiles_${email}`);
+      let currentProfiles = [];
+      if (userProfiles) {
+        currentProfiles = JSON.parse(userProfiles);
+      } else {
+        currentProfiles = [
+          {
+            id: "p-" + Date.now(),
+            name: name || "Google User",
+            avatarId: "avatar-1"
+          }
+        ];
+        localStorage.setItem(`streamverse_profiles_${email}`, JSON.stringify(currentProfiles));
+      }
+      setProfiles(currentProfiles);
+      setActiveProfile(null);
+      localStorage.removeItem("streamverse_active_profile");
+
+      router.push("/profiles");
+      return { success: true };
+    } catch (err) {
+      console.error("Google Auth error:", err);
+      return { success: false, error: "Google authentication failed" };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     setUser(null);
     setProfiles([]);
@@ -203,6 +258,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         signup,
+        loginWithGoogle,
         logout,
         selectProfile,
         createProfile,
